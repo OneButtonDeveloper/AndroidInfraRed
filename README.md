@@ -12,3 +12,4 @@ Contains:
 - SampleApplication
 - InfraRed library
 
+How to use, see: [MainActivity.java](https://github.com/OneButtonDeveloper/AndroidInfraRed/blob/master/app/src/main/java/com/obd/infrared/sample/MainActivity.java)
