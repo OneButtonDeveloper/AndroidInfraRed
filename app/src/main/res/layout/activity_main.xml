@@ -1,0 +1,33 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <EditText
+        android:id="@+id/console"
+        android:text="@string/console_placeholder"
+        android:background="@color/console_background"
+        android:layout_width="match_parent"
+        android:gravity="bottom"
+        android:padding="@dimen/console_padding"
+        android:typeface="monospace"
+        android:textSize="@dimen/console_text_size"
+        android:textColor="@color/console_text"
+        android:singleLine="false"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:inputType="textMultiLine"
+        android:layout_height="120dp" />
+
+    <Button
+        android:id="@+id/transmit_button"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="48sp"
+        android:gravity="center"
+        android:background="@drawable/button_states"
+        android:text="IR"/>
+
+</RelativeLayout>

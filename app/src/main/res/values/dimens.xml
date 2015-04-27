@@ -1,0 +1,5 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="console_text_size">8sp</dimen>
+    <dimen name="console_padding">1dp</dimen>
+</resources>
