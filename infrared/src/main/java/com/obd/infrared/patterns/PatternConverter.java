@@ -6,7 +6,7 @@ import com.obd.infrared.transmit.TransmitInfo;
 public class PatternConverter {
 
 
-    private PatternConverterType converterType;
+    private final PatternConverterType converterType;
 
     public PatternConverter(Logger logger) {
         converterType = PatternConverterType.getConverterType();

@@ -2,6 +2,7 @@ package com.obd.infrared;
 
 import android.content.Context;
 
+import com.obd.infrared.detection.InfraRedDetector;
 import com.obd.infrared.log.Logger;
 import com.obd.infrared.transmit.TransmitInfo;
 import com.obd.infrared.transmit.Transmitter;

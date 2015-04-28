@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/InfraRedSample.iml" filepath="$PROJECT_DIR$/InfraRedSample.iml" />
+      <module fileurl="file://$PROJECT_DIR$/AndroidInfraRed.iml" filepath="$PROJECT_DIR$/AndroidInfraRed.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/infrared/infrared.iml" filepath="$PROJECT_DIR$/infrared/infrared.iml" />
     </modules>

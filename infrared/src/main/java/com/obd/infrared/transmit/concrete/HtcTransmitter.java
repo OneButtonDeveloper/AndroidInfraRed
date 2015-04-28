@@ -13,7 +13,7 @@ import com.obd.infrared.transmit.Transmitter;
 
 public class HtcTransmitter extends Transmitter {
 
-    private CIRControl htcControl;
+    private final CIRControl htcControl;
 
     public HtcTransmitter(Context context, Logger logger) {
         super(context, logger);

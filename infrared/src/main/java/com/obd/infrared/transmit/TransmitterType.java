@@ -4,6 +4,6 @@ public enum TransmitterType {
     Undefined,
     Obsolete, // Samsung
     Actual,   // ConsumerIRManager
-    HTC
-    // TODO: LG, Sony, ...
+    HTC,
+    // TODO: LG
 }

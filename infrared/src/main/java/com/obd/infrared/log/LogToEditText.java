@@ -2,7 +2,6 @@ package com.obd.infrared.log;
 
 import android.os.Handler;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -42,7 +41,7 @@ public class LogToEditText extends Logger {
         }, 0);
     }
 
-    private Queue<String> strings = new LinkedList<>();
+    private final Queue<String> strings = new LinkedList<>();
 
     @Override
     public void log(String message) {
