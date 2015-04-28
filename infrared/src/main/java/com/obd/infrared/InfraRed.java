@@ -10,12 +10,15 @@ import com.obd.infrared.transmit.TransmitterType;
 
 public class InfraRed {
 
+    @SuppressWarnings("FieldCanBeLocal")
+    private final String VERSION = "InfraRed v.1.1";
     private final Context context;
     private final Logger logger;
 
     public InfraRed(Context context, Logger logger) {
         this.context = context;
         this.logger = logger;
+        this.logger.log(VERSION);
     }
 
 
