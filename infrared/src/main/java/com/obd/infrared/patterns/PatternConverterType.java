@@ -2,6 +2,8 @@ package com.obd.infrared.patterns;
 
 import android.os.Build;
 
+import com.obd.infrared.detection.DeviceDetector;
+
 public enum PatternConverterType {
 
     None,
@@ -10,10 +12,13 @@ public enum PatternConverterType {
 
     public static PatternConverterType getConverterType() {
 
-        if (Build.MANUFACTURER.equalsIgnoreCase("SAMSUNG")) {
+        if (DeviceDetector.isSamsung()) {
             return getConverterTypeForSamsung();
         }
-
+        if (DeviceDetector.isLg()) {
+            // TODO: Check that! At least in QRemote SDK samples used TimeLengthPattern
+            return PatternConverterType.ToTimeLengthPattern;
+        }
         return getDefault();
     }
 
@@ -39,7 +44,7 @@ public enum PatternConverterType {
 
 
     /**
-     * Seems like universal solution for LG, Sony and HTC
+     * Seems like universal solution for Sony and HTC?
      * TODO: Check that!
      */
     private static PatternConverterType getDefault() {
@@ -49,4 +54,5 @@ public enum PatternConverterType {
             return PatternConverterType.None;
         }
     }
+
 }
