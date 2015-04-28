@@ -81,7 +81,7 @@ public class InfraRedDetector {
             Method write_irsend = irdaService.getClass().getMethod("write_irsend", new Class[]{String.class});
             logger.log("Got write_irsend");
 
-            TransmitInfo transmitInfo = PatternConverter.createTransmitInfo(38000, PatternConverterType.ToObsoleteSamsung, 100, 100, 100);
+            TransmitInfo transmitInfo = PatternConverter.createTransmitInfo(38000, PatternConverterType.ToObsoleteSamsungString, 100, 100, 100);
             write_irsend.invoke(irdaService, transmitInfo.obsoletePattern);
 
             logger.log("Called write_irsend.invoke");

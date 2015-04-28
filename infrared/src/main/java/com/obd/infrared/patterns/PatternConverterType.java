@@ -5,8 +5,8 @@ import android.os.Build;
 public enum PatternConverterType {
 
     None,
-    ToObsoleteSamsung,
-    ToLollipopSamsung;
+    ToObsoleteSamsungString,
+    ToTimeLengthPattern;
 
     public static PatternConverterType getConverterType() {
 
@@ -14,19 +14,13 @@ public enum PatternConverterType {
             return getConverterTypeForSamsung();
         }
 
-        if (Build.MANUFACTURER.equalsIgnoreCase("HTC")) {
-            return getConverterTypeForHTC();
-        }
-
-        // TODO: LG, Sony ...
-
         return getDefault();
     }
 
 
     private static PatternConverterType getConverterTypeForSamsung() {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
-            return PatternConverterType.ToLollipopSamsung;
+            return PatternConverterType.ToTimeLengthPattern;
         } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
             int lastIdx = Build.VERSION.RELEASE.lastIndexOf(".");
             int VERSION_MR = Integer.valueOf(Build.VERSION.RELEASE.substring(lastIdx + 1));
@@ -35,31 +29,22 @@ public enum PatternConverterType {
                 return PatternConverterType.None;
             } else {
                 // Later version of Android 4.4.3
-                return PatternConverterType.ToLollipopSamsung;
+                return PatternConverterType.ToTimeLengthPattern;
             }
         } else {
             // Before version of Android 4
-            return PatternConverterType.ToObsoleteSamsung;
+            return PatternConverterType.ToObsoleteSamsungString;
         }
     }
 
 
     /**
-     * Not working with htc devices!
+     * Seems like universal solution for LG, Sony and HTC
+     * TODO: Check that!
      */
-    private static PatternConverterType getConverterTypeForHTC() {
-        // TODO: Fix for HTC
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
-            return PatternConverterType.ToLollipopSamsung;
-        } else {
-            return PatternConverterType.None;
-        }
-    }
-
-
     private static PatternConverterType getDefault() {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
-            return PatternConverterType.ToLollipopSamsung;
+            return PatternConverterType.ToTimeLengthPattern;
         } else {
             return PatternConverterType.None;
         }

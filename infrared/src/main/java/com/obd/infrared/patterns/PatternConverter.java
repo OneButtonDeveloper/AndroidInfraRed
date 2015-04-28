@@ -19,9 +19,9 @@ public class PatternConverter {
 
     public static TransmitInfo createTransmitInfo(int frequency, PatternConverterType converterType, int... pulseCountPattern) {
         switch (converterType) {
-            case ToLollipopSamsung:
+            case ToTimeLengthPattern:
                 return new TransmitInfo(frequency, convertToTimeLengthPattern(frequency, pulseCountPattern));
-            case ToObsoleteSamsung:
+            case ToObsoleteSamsungString:
                 return new TransmitInfo(frequency, createObsoletePattern(frequency, pulseCountPattern));
             default:
                 return new TransmitInfo(frequency, pulseCountPattern);
@@ -39,6 +39,10 @@ public class PatternConverter {
         return new Object[]{result.toString()};
     }
 
+
+    /**
+     * http://developer.samsung.com/technical-doc/view.do?v=T000000125
+     */
     private static int[] convertToTimeLengthPattern(int frequency, int[] pulseCountPattern) {
         int k = 1000000 / frequency;
         for (int i = 0; i < pulseCountPattern.length; i++) {
