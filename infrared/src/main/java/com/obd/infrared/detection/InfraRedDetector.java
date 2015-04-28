@@ -3,7 +3,7 @@ package com.obd.infrared.detection;
 import android.content.Context;
 
 import com.obd.infrared.detection.concrete.ActualDetector;
-import com.obd.infrared.detection.concrete.HTCDetector;
+import com.obd.infrared.detection.concrete.HtcDetector;
 import com.obd.infrared.detection.concrete.ObsoleteSamsungDetector;
 import com.obd.infrared.log.Logger;
 import com.obd.infrared.transmit.TransmitterType;
@@ -28,7 +28,7 @@ public class InfraRedDetector {
     public InfraRedDetector(Context context, Logger logger) {
         this.detectorParams = new DetectorParams(context, logger);
 
-        this.detectors.add(new HTCDetector());
+        this.detectors.add(new HtcDetector());
         this.detectors.add(new ObsoleteSamsungDetector());
         this.detectors.add(new ActualDetector());
     }

@@ -11,7 +11,7 @@ import com.obd.infrared.transmit.TransmitterType;
 
 import java.util.List;
 
-public class HTCDetector implements IDetector {
+public class HtcDetector implements IDetector {
 
     /**
      * Code from samples in HTC IR SDK
