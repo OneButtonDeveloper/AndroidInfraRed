@@ -5,6 +5,7 @@ import android.content.Context;
 import com.obd.infrared.log.Logger;
 import com.obd.infrared.transmit.concrete.ActualTransmitter;
 import com.obd.infrared.transmit.concrete.HtcTransmitter;
+import com.obd.infrared.transmit.concrete.LgTransmitter;
 import com.obd.infrared.transmit.concrete.ObsoleteTransmitter;
 import com.obd.infrared.transmit.concrete.UndefinedTransmitter;
 
@@ -18,6 +19,8 @@ public abstract class Transmitter {
                 return new ObsoleteTransmitter(context, logger);
             case HTC:
                 return new HtcTransmitter(context, logger);
+            case LG:
+                return new LgTransmitter(context, logger);
             default:
                 return new UndefinedTransmitter(context, logger);
         }
