@@ -21,8 +21,7 @@ public class HtcDetector implements IDetector {
         try {
             boolean hasPackage = hasPackage("com.htc.cirmodule", detectorParams.context);
             detectorParams.logger.log("Check HTC IR interface: " + hasPackage);
-            detectorParams.logger.log("Check HTC IR Build.VERSION.SDK_INT: < Build.VERSION_CODES.KITKAT: " + (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT));
-            return Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT && hasPackage;
+            return hasPackage;
         } catch (Exception e) {
             detectorParams.logger.error("On HTC ir error", e);
             return false;

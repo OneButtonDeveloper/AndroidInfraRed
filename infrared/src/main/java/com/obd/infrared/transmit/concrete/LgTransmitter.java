@@ -1,11 +1,9 @@
 package com.obd.infrared.transmit.concrete;
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
 
-import com.htc.circontrol.CIRControl;
-import com.htc.htcircontrol.HtcIrData;
+import com.lge.hardware.IRBlaster.Device;
+import com.lge.hardware.IRBlaster.IRAction;
 import com.lge.hardware.IRBlaster.IRBlaster;
 import com.lge.hardware.IRBlaster.IRBlasterCallback;
 import com.obd.infrared.log.Logger;
@@ -33,6 +31,10 @@ public class LgTransmitter extends Transmitter implements IRBlasterCallback {
     public void transmit(TransmitInfo transmitInfo) {
         try {
             if (isReady) {
+                if (deviceSelected != null){
+                    irBlaster.sendIR(new IRAction(deviceSelected.Id, deviceSelected.KeyFunctions.get(0).Id, 0));
+                    logger.log("Try to IRBlaster.send IR");
+                }
                 logger.log("Try to transmit LG IRBlaster");
                 irBlaster.sendIRPattern(transmitInfo.frequency, transmitInfo.pattern);
             } else {
@@ -54,9 +56,18 @@ public class LgTransmitter extends Transmitter implements IRBlasterCallback {
     }
 
     private boolean isReady = false;
+    private Device deviceSelected = null;
+
     @Override
     public void IRBlasterReady() {
         isReady = true;
+        Device[] mDevices = irBlaster.getDevices();
+        for (Device device:mDevices){
+            if(device.KeyFunctions != null && device.KeyFunctions.size() > 0) {
+                deviceSelected = device;
+                break;
+            }
+        }
         logger.log("LG IRBlaster ready");
     }
 
@@ -75,3 +86,4 @@ public class LgTransmitter extends Transmitter implements IRBlasterCallback {
         logger.log("LG IRBlaster.failure : " + i);
     }
 }
+
