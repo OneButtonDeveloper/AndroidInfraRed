@@ -15,4 +15,6 @@ Contains:
 How to use, see: [MainActivity.java](https://github.com/OneButtonDeveloper/AndroidInfraRed/blob/master/app/src/main/java/com/obd/infrared/sample/MainActivity.java)
 
 
+Known issues: One of the project files contains broken characters. Just rename it again.
+
 Email: one.button.developer@gmail.com
