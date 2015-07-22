@@ -3,6 +3,7 @@
     package="com.obd.infrared.sample" >
 
     <uses-permission android:name="android.permission.TRANSMIT_IR" android:required="false" />
+    <uses-permission android:name="com.sony.remotecontrol.permission.API"/>
     <uses-feature android:name="android.hardware.consumerir" android:required="false"/>
 
     <application
@@ -10,6 +11,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+
         <activity
             android:screenOrientation="portrait"
             android:name=".MainActivity"

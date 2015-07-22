@@ -1,6 +1,7 @@
 package com.obd.infrared.detection;
 
 import android.content.Context;
+import android.os.Build;
 
 import com.obd.infrared.detection.concrete.ActualDetector;
 import com.obd.infrared.detection.concrete.HtcDetector;
@@ -28,6 +29,9 @@ public class InfraRedDetector {
 
     public InfraRedDetector(Context context, Logger logger) {
         this.detectorParams = new DetectorParams(context, logger);
+
+        logger.log("Build.MANUFACTURER: " + Build.MANUFACTURER);
+        logger.log("IsSONY: " + DeviceDetector.isSony());
 
         this.detectors.add(new LgDetector());
         this.detectors.add(new HtcDetector());
