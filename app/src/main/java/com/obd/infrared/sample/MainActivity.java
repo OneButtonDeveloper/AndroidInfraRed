@@ -35,12 +35,12 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         transmitButton.setOnClickListener(this);
 
         // Log messages print to EditText
-        //EditText console = (EditText) this.findViewById(R.id.console);
-        //log = new LogToEditText(console, TAG);
-        //log.log("Hello, world!");
+        EditText console = (EditText) this.findViewById(R.id.console);
+        log = new LogToEditText(console, TAG);
+        log.log("Hello, world!");
 
         // Log messages print with Log.d(), Log.w(), Log.e()
-        LogToConsole log = new LogToConsole(TAG);
+        //LogToConsole log = new LogToConsole(TAG);
 
         // Turn off log
         // LogToAir log = new LogToAir(TAG);

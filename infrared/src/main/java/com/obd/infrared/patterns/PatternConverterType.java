@@ -8,16 +8,18 @@ public enum PatternConverterType {
 
     None,
     ToObsoleteSamsungString,
-    ToTimeLengthPattern;
+    ToTimeLengthPattern,
+    ToTimeLengthHtcPattern;
 
     public static PatternConverterType getConverterType() {
-
         if (DeviceDetector.isSamsung()) {
             return getConverterTypeForSamsung();
         }
         if (DeviceDetector.isLg()) {
-            // TODO: Check that! At least in QRemote SDK samples used TimeLengthPattern
             return PatternConverterType.ToTimeLengthPattern;
+        }
+        if (DeviceDetector.isHtc()) {
+            return PatternConverterType.ToTimeLengthHtcPattern;
         }
         return getDefault();
     }

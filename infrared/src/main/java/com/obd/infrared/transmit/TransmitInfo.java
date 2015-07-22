@@ -22,8 +22,9 @@ public class TransmitInfo {
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder("TransmitInfo [").append(frequency).append("]: ");
         if (pattern != null) {
+            stringBuilder.append(" Count:").append(this.pattern.length).append(": ");
             for (int v : pattern) {
-                stringBuilder.append(v).append(", ");
+                stringBuilder.append(", ").append(v);
             }
         } else {
             stringBuilder.append(obsoletePattern[0].toString());
