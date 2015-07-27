@@ -31,7 +31,6 @@ public class InfraRedDetector {
         this.detectorParams = new DetectorParams(context, logger);
 
         logger.log("Build.MANUFACTURER: " + Build.MANUFACTURER);
-        logger.log("IsSONY: " + DeviceDetector.isSony());
 
         this.detectors.add(new LgDetector());
         this.detectors.add(new HtcDetector());

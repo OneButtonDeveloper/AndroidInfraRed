@@ -19,16 +19,4 @@ public class DeviceDetector {
     private static boolean isDevice(String manufactureName) {
         return Build.MANUFACTURER.equalsIgnoreCase(manufactureName);
     }
-
-    @SuppressWarnings("unused")
-    public static boolean isSony() {
-        try {
-            Class libraryToInvestigate = Class.forName("com.sony.remotecontrol.ir.v1"); // Dynamically initiate the library
-            return libraryToInvestigate != null;
-        } catch (ClassNotFoundException e) {
-            return false;
-        } catch (Exception e) {
-            return false;
-        }
-    }
 }
