@@ -1,6 +1,7 @@
 package com.obd.infrared;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.obd.infrared.detection.InfraRedDetector;
 import com.obd.infrared.log.Logger;
@@ -11,14 +12,14 @@ import com.obd.infrared.transmit.TransmitterType;
 public class InfraRed {
 
     @SuppressWarnings("FieldCanBeLocal")
-    private final String VERSION = "InfraRed v.1.1";
+    private final String VERSION = "InfraRed v.1.3";
     private final Context context;
     private final Logger logger;
 
     public InfraRed(Context context, Logger logger) {
         this.context = context;
         this.logger = logger;
-        this.logger.log(VERSION);
+        Log.w("AndroidInfraRed", VERSION);
     }
 
 
