@@ -30,10 +30,14 @@ public class LogToEditText extends Logger {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                boolean hasNew = false;
                 while (!strings.isEmpty()) {
+                    hasNew = true;
                     textView.append(strings.remove() + lineSeparator);
                 }
-                textView.setSelection(textView.getText().length());
+                if (hasNew) {
+                    textView.setSelection(textView.getText().length());
+                }
                 if (!wasDestroyed) {
                     handler.postDelayed(this, 100);
                 }
