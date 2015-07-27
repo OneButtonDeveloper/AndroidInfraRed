@@ -9,7 +9,7 @@ public enum PatternConverterType {
     None,
     ToObsoleteSamsungString,
     ToTimeLengthPattern,
-    ToTimeLengthHtcPattern;
+    ToPulsesHtcPattern;
 
     public static PatternConverterType getConverterType() {
         if (DeviceDetector.isSamsung()) {
@@ -19,9 +19,9 @@ public enum PatternConverterType {
             return PatternConverterType.ToTimeLengthPattern;
         }
         if (DeviceDetector.isHtc()) {
-            return PatternConverterType.ToTimeLengthHtcPattern;
+            return PatternConverterType.ToPulsesHtcPattern;
         }
-        return getDefault();
+        return PatternConverterType.None;
     }
 
 
@@ -44,17 +44,5 @@ public enum PatternConverterType {
         }
     }
 
-
-    /**
-     * Seems like universal solution for Sony and HTC?
-     * TODO: Check that!
-     */
-    private static PatternConverterType getDefault() {
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
-            return PatternConverterType.ToTimeLengthPattern;
-        } else {
-            return PatternConverterType.None;
-        }
-    }
 
 }

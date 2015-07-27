@@ -19,8 +19,8 @@ public class PatternConverter {
 
     public static TransmitInfo createTransmitInfo(int frequency, PatternConverterType converterType, int... pulseCountPattern) {
         switch (converterType) {
-            case ToTimeLengthHtcPattern:
-                return new TransmitInfo(frequency, convertToTimeLengthHtcPattern(frequency, pulseCountPattern));
+            case ToPulsesHtcPattern:
+                return new TransmitInfo(frequency, convertToPulsesHtcPattern(pulseCountPattern));
             case ToTimeLengthPattern:
                 return new TransmitInfo(frequency, convertToTimeLengthPattern(frequency, pulseCountPattern));
             case ToObsoleteSamsungString:
@@ -53,19 +53,16 @@ public class PatternConverter {
     }
 
 
-    private static int[] convertToTimeLengthHtcPattern(int frequency, int[] pulseCountPattern) {
+    private static int[] convertToPulsesHtcPattern(int[] pulseCountPattern) {
         int count = pulseCountPattern.length;
         boolean isEven = count % 2 == 0;
         if (!isEven) {
             count += 1;
         }
         int[] newPattern = new int[count];
-        int k = 1000000 / frequency;
-        for (int i = 0; i < pulseCountPattern.length; i++) {
-            newPattern[i] = pulseCountPattern[i] * k;
-        }
+        System.arraycopy(pulseCountPattern, 0, newPattern, 0, pulseCountPattern.length);
         if (!isEven) {
-            newPattern[count - 1] = 100;
+            newPattern[count - 1] = 10;
         }
         return newPattern;
 

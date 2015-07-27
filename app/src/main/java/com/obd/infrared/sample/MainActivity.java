@@ -78,7 +78,11 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        TransmitInfo transmitInfo = patterns[random.nextInt(patterns.length)];
+        // TransmitInfo transmitInfo = patterns[random.nextInt(patterns.length)];
+        // Nikon
+        TransmitInfo transmitInfo = new TransmitInfo(38000, new int[] {2000, 27800, 400, 1600, 400, 3600, 400, 200});
+        // Canon
+        // TransmitInfo transmitInfo = new TransmitInfo(33000, new int[] {500, 7300, 500, 200});
         infraRed.transmit(transmitInfo);
     }
 
