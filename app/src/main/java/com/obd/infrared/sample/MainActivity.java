@@ -23,7 +23,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private LogToEditText log;
     private InfraRed infraRed;
     private TransmitInfo[] patterns;
-    private Random random = new Random();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,10 +36,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         // Log messages print to EditText
         EditText console = (EditText) this.findViewById(R.id.console);
         log = new LogToEditText(console, TAG);
-        log.log("Hello, world!");
 
         // Log messages print with Log.d(), Log.w(), Log.e()
-        //LogToConsole log = new LogToConsole(TAG);
+        // LogToConsole log = new LogToConsole(TAG);
 
         // Turn off log
         // LogToAir log = new LogToAir(TAG);
@@ -58,8 +56,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         List<TransmitInfo> patterns = new ArrayList<>();
         // Nikon D7100 v.1
         patterns.add(patternConverter.createTransmitInfo(38400, 1, 105, 5, 1, 75, 1095, 20, 60, 20, 140, 15, 2500, 80, 1));
-        // Nikon D7100 v.2
-        patterns.add(patternConverter.createTransmitInfo(38400, 77, 1069, 16, 61, 16, 137, 16, 2427, 77, 1069, 16, 61, 16, 137, 16));
+
         this.patterns = patterns.toArray(new TransmitInfo[patterns.size()]);
 
         for (TransmitInfo transmitInfo : this.patterns) {
@@ -76,11 +73,13 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     }
 
 
+    private int currentPattern = 0;
     @Override
     public void onClick(View v) {
-        // TransmitInfo transmitInfo = patterns[random.nextInt(patterns.length)];
+        TransmitInfo transmitInfo = patterns[currentPattern++];
+        if (currentPattern >= patterns.length) currentPattern = 0;
         // Nikon
-        TransmitInfo transmitInfo = new TransmitInfo(38000, new int[] {2000, 27800, 400, 1600, 400, 3600, 400, 200});
+        // TransmitInfo transmitInfo = new TransmitInfo(38000, new int[] {2000, 27800, 400, 1600, 400, 3600, 400, 200});
         // Canon
         // TransmitInfo transmitInfo = new TransmitInfo(33000, new int[] {500, 7300, 500, 200});
         infraRed.transmit(transmitInfo);
