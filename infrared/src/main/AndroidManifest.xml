@@ -4,7 +4,6 @@
     <uses-feature android:name="android.hardware.consumerir" android:required="false"/>
 
     <application android:allowBackup="true" android:label="@string/app_name">
-        <uses-library android:name="com.sony.remotecontrol.ir.v1" android:required="false"/>
     </application>
 
 </manifest>
