@@ -6,6 +6,8 @@ import com.obd.infrared.log.Logger;
 import com.obd.infrared.transmit.concrete.ActualTransmitter;
 import com.obd.infrared.transmit.concrete.HtcTransmitter;
 import com.obd.infrared.transmit.concrete.LgTransmitter;
+import com.obd.infrared.transmit.concrete.LgWithDeviceTransmitter;
+import com.obd.infrared.transmit.concrete.LgWithoutDeviceTransmitter;
 import com.obd.infrared.transmit.concrete.ObsoleteTransmitter;
 import com.obd.infrared.transmit.concrete.UndefinedTransmitter;
 
@@ -20,7 +22,9 @@ public abstract class Transmitter {
             case HTC:
                 return new HtcTransmitter(context, logger);
             case LG:
-                return new LgTransmitter(context, logger);
+                return new LgWithDeviceTransmitter(context, logger);
+            case LG_WithOutDevice:
+                return new LgWithoutDeviceTransmitter(context, logger);
             default:
                 return new UndefinedTransmitter(context, logger);
         }

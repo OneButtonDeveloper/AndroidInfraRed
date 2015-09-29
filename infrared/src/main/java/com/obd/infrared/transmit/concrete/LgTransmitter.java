@@ -11,9 +11,9 @@ import com.obd.infrared.transmit.TransmitInfo;
 import com.obd.infrared.transmit.Transmitter;
 
 
-public class LgTransmitter extends Transmitter implements IRBlasterCallback {
+public abstract class LgTransmitter extends Transmitter implements IRBlasterCallback {
 
-    private final IRBlaster irBlaster;
+    protected final IRBlaster irBlaster;
 
     public LgTransmitter(Context context, Logger logger) {
         super(context, logger);
@@ -31,10 +31,7 @@ public class LgTransmitter extends Transmitter implements IRBlasterCallback {
     public void transmit(TransmitInfo transmitInfo) {
         try {
             if (isReady) {
-                if (deviceSelected != null){
-                    irBlaster.sendIR(new IRAction(deviceSelected.Id, deviceSelected.KeyFunctions.get(0).Id, 0));
-                    logger.log("Try to IRBlaster.send IR");
-                }
+                beforeSendIr();
                 logger.log("Try to transmit LG IRBlaster");
                 irBlaster.sendIRPattern(transmitInfo.frequency, transmitInfo.pattern);
             } else {
@@ -44,6 +41,8 @@ public class LgTransmitter extends Transmitter implements IRBlasterCallback {
             logger.error("On try to transmit LG IRBlaster", e);
         }
     }
+
+    protected abstract void beforeSendIr();
 
     @Override
     public void stop() {
@@ -56,18 +55,10 @@ public class LgTransmitter extends Transmitter implements IRBlasterCallback {
     }
 
     private boolean isReady = false;
-    private Device deviceSelected = null;
 
     @Override
     public void IRBlasterReady() {
         isReady = true;
-        Device[] mDevices = irBlaster.getDevices();
-        for (Device device:mDevices){
-            if(device.KeyFunctions != null && device.KeyFunctions.size() > 0) {
-                deviceSelected = device;
-                break;
-            }
-        }
         logger.log("LG IRBlaster ready");
     }
 
