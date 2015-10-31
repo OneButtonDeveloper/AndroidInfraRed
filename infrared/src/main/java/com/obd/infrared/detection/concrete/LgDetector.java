@@ -8,9 +8,6 @@ import com.obd.infrared.transmit.TransmitterType;
 
 public class LgDetector implements IDetector {
 
-    /**
-     * Code from samples in HTC IR SDK
-     */
     @Override
     public boolean hasTransmitter(InfraRedDetector.DetectorParams detectorParams) {
         try {
@@ -23,7 +20,7 @@ public class LgDetector implements IDetector {
                 return false;
             }
         } catch (Exception e) {
-            detectorParams.logger.error("On HTC ir error", e);
+            detectorParams.logger.error("On LG ir detection error", e);
             return false;
         }
     }
