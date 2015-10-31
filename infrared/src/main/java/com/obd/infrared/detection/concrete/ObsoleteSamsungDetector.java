@@ -11,18 +11,18 @@ import java.lang.reflect.Method;
 
 public class ObsoleteSamsungDetector implements IDetector {
 
-    @SuppressWarnings("ResourceType")
+    @SuppressWarnings({"ResourceType", "SpellCheckingInspection", "RedundantArrayCreation"})
     @Override
     public boolean hasTransmitter(InfraRedDetector.DetectorParams detectorParams) {
         try {
             detectorParams.logger.log("Check obsolete Samsung IR interface");
             Object irdaService = detectorParams.context.getSystemService("irda");
             if (irdaService == null) {
-                detectorParams.logger.log("Not found obsolete Samsung IR service                                                                                                                                                                                                                                                                                                                                                                                                                                                             ");
+                detectorParams.logger.log("Not found obsolete Samsung IR service");
                 return false;
             }
             detectorParams.logger.log("Got irdaService");
-            Method write_irsend = irdaService.getClass().getMethod("write_irsend", new Class[]{String.class});
+            Method write_irsend = irdaService.getClass().getMethod("write_irsend", new Class[]{ String.class });
             detectorParams.logger.log("Got write_irsend");
 
             TransmitInfo transmitInfo = PatternConverter.createTransmitInfo(38000, PatternConverterType.ToObsoleteSamsungString, 100, 100, 100);
