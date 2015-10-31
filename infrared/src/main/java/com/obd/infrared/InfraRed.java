@@ -13,7 +13,7 @@ import com.obd.infrared.transmit.TransmitterType;
 public class InfraRed {
 
     @SuppressWarnings("FieldCanBeLocal")
-    private final String VERSION = "InfraRed v.2.0";
+    private final String VERSION = "InfraRed v.2.1";
     private final Context context;
     private final Logger logger;
 
