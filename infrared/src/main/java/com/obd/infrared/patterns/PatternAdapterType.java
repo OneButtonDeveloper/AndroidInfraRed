@@ -4,43 +4,46 @@ import android.os.Build;
 
 import com.obd.infrared.detection.DeviceDetector;
 
-public enum PatternConverterType {
+public enum PatternAdapterType {
 
     None,
     ToObsoleteSamsungString,
     ToTimeLengthPattern,
     ToPulsesHtcPattern;
 
-    public static PatternConverterType getConverterType() {
+    public static PatternAdapterType getConverterType() {
         if (DeviceDetector.isSamsung()) {
             return getConverterTypeForSamsung();
         }
         if (DeviceDetector.isLg()) {
-            return PatternConverterType.ToTimeLengthPattern;
+            return PatternAdapterType.ToTimeLengthPattern;
         }
         if (DeviceDetector.isHtc()) {
-            return PatternConverterType.ToPulsesHtcPattern;
+            return PatternAdapterType.ToPulsesHtcPattern;
         }
-        return PatternConverterType.None;
+        return PatternAdapterType.None;
     }
 
 
-    private static PatternConverterType getConverterTypeForSamsung() {
+    /**
+     * http://developer.samsung.com/technical-doc/view.do?v=T000000125
+     */
+    private static PatternAdapterType getConverterTypeForSamsung() {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
-            return PatternConverterType.ToTimeLengthPattern;
+            return PatternAdapterType.ToTimeLengthPattern;
         } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
             int lastIdx = Build.VERSION.RELEASE.lastIndexOf(".");
             int VERSION_MR = Integer.valueOf(Build.VERSION.RELEASE.substring(lastIdx + 1));
             if (VERSION_MR < 3) {
                 // Before version of Android 4.4.2
-                return PatternConverterType.None;
+                return PatternAdapterType.None;
             } else {
                 // Later version of Android 4.4.3
-                return PatternConverterType.ToTimeLengthPattern;
+                return PatternAdapterType.ToTimeLengthPattern;
             }
         } else {
             // Before version of Android 4
-            return PatternConverterType.ToObsoleteSamsungString;
+            return PatternAdapterType.ToObsoleteSamsungString;
         }
     }
 

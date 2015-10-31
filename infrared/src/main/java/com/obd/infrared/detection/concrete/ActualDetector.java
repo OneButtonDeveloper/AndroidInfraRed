@@ -6,8 +6,6 @@ import android.os.Build;
 
 import com.obd.infrared.detection.IDetector;
 import com.obd.infrared.detection.InfraRedDetector;
-import com.obd.infrared.patterns.PatternConverter;
-import com.obd.infrared.patterns.PatternConverterType;
 import com.obd.infrared.transmit.TransmitInfo;
 import com.obd.infrared.transmit.TransmitterType;
 
@@ -29,7 +27,7 @@ public class ActualDetector implements IDetector {
             if (consumerIrManager.hasIrEmitter()) {
 
                 detectorParams.logger.log("CONSUMER_IR_SERVICE: must be included TRANSMIT_IR permission to AndroidManifest.xml");
-                TransmitInfo transmitInfo = PatternConverter.createTransmitInfo(38000, PatternConverterType.None, 100, 100, 100);
+                TransmitInfo transmitInfo = new TransmitInfo(38000, new int[]{100, 100, 100, 100});
                 consumerIrManager.transmit(transmitInfo.frequency, transmitInfo.pattern);
 
                 detectorParams.logger.log("CONSUMER_IR_SERVICE: hasIrEmitter is true");

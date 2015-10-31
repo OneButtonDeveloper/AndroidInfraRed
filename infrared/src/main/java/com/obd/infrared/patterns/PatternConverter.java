@@ -1,71 +1,54 @@
 package com.obd.infrared.patterns;
 
-import com.obd.infrared.log.Logger;
-import com.obd.infrared.transmit.TransmitInfo;
-
 public class PatternConverter {
 
+    private final PatternType type;
+    private final int frequency;
+    private final int[] data;
 
-    private final PatternConverterType converterType;
-
-    public PatternConverter(Logger logger) {
-        converterType = PatternConverterType.getConverterType();
-        logger.log("ConverterType: " + converterType);
+    public PatternConverter(PatternType type, int frequency, int... data) {
+        this.type = type;
+        this.frequency = frequency;
+        this.data = data;
     }
 
-    public TransmitInfo createTransmitInfo(int frequency, int... pulseCountPattern) {
-        return createTransmitInfo(frequency, converterType, pulseCountPattern);
+    public int getFrequency() {
+        return this.frequency;
     }
 
-    public static TransmitInfo createTransmitInfo(int frequency, PatternConverterType converterType, int... pulseCountPattern) {
-        switch (converterType) {
-            case ToPulsesHtcPattern:
-                return new TransmitInfo(frequency, convertToPulsesHtcPattern(pulseCountPattern));
-            case ToTimeLengthPattern:
-                return new TransmitInfo(frequency, convertToTimeLengthPattern(frequency, pulseCountPattern));
-            case ToObsoleteSamsungString:
-                return new TransmitInfo(frequency, createObsoletePattern(frequency, pulseCountPattern));
-            default:
-                return new TransmitInfo(frequency, pulseCountPattern);
+    /** Convert and return data in @newPatternType */
+    public int[] convertDataTo(PatternType newPatternType) {
+        if (newPatternType == type) {
+            return data;
         }
-    }
 
-
-    private static Object[] createObsoletePattern(int frequency, int[] pulseCountPattern) {
-        StringBuilder result = new StringBuilder();
-        result.append(frequency);
-        for (Integer i : pulseCountPattern) {
-            result.append(',');
-            result.append(i);
+        if (type == PatternType.Intervals && newPatternType == PatternType.Cycles) {
+            return convertIntervalsToCycles(frequency, data);
         }
-        return new Object[]{result.toString()};
+
+        if (type == PatternType.Cycles && newPatternType == PatternType.Intervals) {
+            return convertCyclesToIntervals(frequency, data);
+        }
+
+        throw new IllegalArgumentException("Unsupported PatternType: " + newPatternType);
     }
 
-    /**
-     * http://developer.samsung.com/technical-doc/view.do?v=T000000125
-     */
-    private static int[] convertToTimeLengthPattern(int frequency, int[] pulseCountPattern) {
+    public static int[] convertCyclesToIntervals(int frequency, int[] cycles) {
+        int[] intervals = new int[cycles.length];
         int k = 1000000 / frequency;
-        for (int i = 0; i < pulseCountPattern.length; i++) {
-            pulseCountPattern[i] = pulseCountPattern[i] * k;
+        for (int i = 0; i < intervals.length; i++) {
+            intervals[i] = cycles[i] * k;
         }
-        return pulseCountPattern;
+        return intervals;
     }
 
-
-    private static int[] convertToPulsesHtcPattern(int[] pulseCountPattern) {
-        int count = pulseCountPattern.length;
-        boolean isEven = count % 2 == 0;
-        if (!isEven) {
-            count += 1;
+    public static int[] convertIntervalsToCycles(int frequency, int[] intervals) {
+        int[] cycles = new int[intervals.length];
+        int k = 1000000 / frequency;
+        for (int i = 0; i < cycles.length; i++) {
+            cycles[i] = intervals[i] / k;
         }
-        int[] newPattern = new int[count];
-        System.arraycopy(pulseCountPattern, 0, newPattern, 0, pulseCountPattern.length);
-        if (!isEven) {
-            newPattern[count - 1] = 10;
-        }
-        return newPattern;
-
+        return cycles;
     }
 
 }

@@ -7,15 +7,16 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.obd.infrared.InfraRed;
-import com.obd.infrared.log.LogToConsole;
 import com.obd.infrared.log.LogToEditText;
+import com.obd.infrared.patterns.PatternAdapter;
 import com.obd.infrared.patterns.PatternConverter;
+import com.obd.infrared.patterns.PatternConverterUtils;
+import com.obd.infrared.patterns.PatternType;
 import com.obd.infrared.transmit.TransmitInfo;
 import com.obd.infrared.transmit.TransmitterType;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 
 public class MainActivity extends ActionBarActivity implements View.OnClickListener {
@@ -50,14 +51,33 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         // initialize transmitter by type
         infraRed.createTransmitter(transmitterType);
 
-        // initialize converter for convert pulse patterns to time patterns for Android 5.0 (Lollipop) or to Samsung obsolete service format
-        PatternConverter patternConverter = new PatternConverter(log);
-        // initialize patterns
-        List<TransmitInfo> patterns = new ArrayList<>();
+        // initialize raw patterns
+        List<PatternConverter> rawPatterns = new ArrayList<>();
+        // Canon
+        // rawPatterns.add(new PatternConverter(PatternType.Intervals, 33000, 500, 7300, 500, 200));
         // Nikon D7100 v.1
-        patterns.add(patternConverter.createTransmitInfo(38400, 1, 105, 5, 1, 75, 1095, 20, 60, 20, 140, 15, 2500, 80, 1));
+        rawPatterns.add(new PatternConverter(PatternType.Cycles, 38400, 1, 105, 5, 1, 75, 1095, 20, 60, 20, 140, 15, 2500, 80, 1));
+        // Nikon D7100 v.2
+        rawPatterns.add(new PatternConverter(PatternType.Cycles, 38400, 77, 1069, 16, 61, 16, 137, 16, 2427, 77, 1069, 16, 61, 16, 137, 16));
+        // Nikon D7100 v.3
+        rawPatterns.add(new PatternConverter(PatternType.Intervals, 38000, 2000, 27800, 400, 1600, 400, 3600, 400, 200));
+        // Nikon D7100 v.3 fromString
+        rawPatterns.add(PatternConverterUtils.fromString(PatternType.Intervals, 38000, "2000, 27800, 400, 1600, 400, 3600, 400, 200"));
+        // Nikon D7100 v.3 fromHexString
+        rawPatterns.add(PatternConverterUtils.fromHexString(PatternType.Intervals, 38000, "0x7d0 0x6c98 0x190 0x640 0x190 0xe10 0x190 0xc8"));
+        // Nikon D7100 v.3 fromHexString without 0x
+        rawPatterns.add(PatternConverterUtils.fromHexString(PatternType.Intervals, 38000, "7d0 6c98 190 640 190 e10 190 c8"));
 
-        this.patterns = patterns.toArray(new TransmitInfo[patterns.size()]);
+
+        // initialize converter for convert pulse patterns to time patterns for Android 5.0 (Lollipop) or to Samsung obsolete service format
+        PatternAdapter patternAdapter = new PatternAdapter(log);
+
+        // initialize TransmitInfoArray
+        TransmitInfo[] transmitInfoArray = new TransmitInfo[rawPatterns.size()];
+        for (int i = 0; i < transmitInfoArray.length; i++) {
+            transmitInfoArray[i] = patternAdapter.createTransmitInfo(rawPatterns.get(i));
+        }
+        this.patterns = transmitInfoArray;
 
         for (TransmitInfo transmitInfo : this.patterns) {
             log.log(transmitInfo.toString());
@@ -74,14 +94,11 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
 
     private int currentPattern = 0;
+
     @Override
     public void onClick(View v) {
         TransmitInfo transmitInfo = patterns[currentPattern++];
         if (currentPattern >= patterns.length) currentPattern = 0;
-        // Nikon
-        // TransmitInfo transmitInfo = new TransmitInfo(38000, new int[] {2000, 27800, 400, 1600, 400, 3600, 400, 200});
-        // Canon
-        // TransmitInfo transmitInfo = new TransmitInfo(33000, new int[] {500, 7300, 500, 200});
         infraRed.transmit(transmitInfo);
     }
 
