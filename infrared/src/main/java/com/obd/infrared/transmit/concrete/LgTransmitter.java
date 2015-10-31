@@ -2,10 +2,9 @@ package com.obd.infrared.transmit.concrete;
 
 import android.content.Context;
 
-import com.lge.hardware.IRBlaster.Device;
-import com.lge.hardware.IRBlaster.IRAction;
 import com.lge.hardware.IRBlaster.IRBlaster;
 import com.lge.hardware.IRBlaster.IRBlasterCallback;
+import com.lge.hardware.IRBlaster.ResultCode;
 import com.obd.infrared.log.Logger;
 import com.obd.infrared.transmit.TransmitInfo;
 import com.obd.infrared.transmit.Transmitter;
@@ -33,7 +32,9 @@ public abstract class LgTransmitter extends Transmitter implements IRBlasterCall
             if (isReady) {
                 beforeSendIr();
                 logger.log("Try to transmit LG IRBlaster");
-                irBlaster.sendIRPattern(transmitInfo.frequency, transmitInfo.pattern);
+                int resultCode = irBlaster.sendIRPattern(transmitInfo.frequency, transmitInfo.pattern);
+                logger.log("Result: " + ResultCode.getString(resultCode));
+
             } else {
                 logger.log("LG IRBlaster not ready");
             }
