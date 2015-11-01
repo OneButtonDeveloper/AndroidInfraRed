@@ -10,10 +10,6 @@ Contains:
 - SampleApplication
 - InfraRed library
 
-How to use, see: [MainActivity.java](https://github.com/OneButtonDeveloper/AndroidInfraRed/blob/master/app/src/main/java/com/obd/infrared/sample/MainActivity.java)
-
-Known issues: One of the project files contains broken characters. Just rename it again.
-
 Email: one.button.developer@gmail.com
 
 
@@ -23,11 +19,20 @@ Email: one.button.developer@gmail.com
   - [Basic theory](#basic-theory)
   - [Sequence types](#sequence-types)
   - [Converting the patterns](#converting-the-patterns)
-- **How to use**
+- **[How to use](#how-to-use)**
+  - [0. Include the InfraRed library to your project](#0-include-the-infrared-library-to-your-project)
+  - [1. Add the following permissions to your AndroidManifest.xml](#1-add-the-following-permissions-to-your-androidmanifestxml)
+  - [2. Initialize logging](#2-initialize-logging)
+  - [3. Initialize the InfraRed class](#3-initialize-the-infrared-class)
+  - [4. Initialize the transmitter](#4-initialize-the-transmitter)
+  - [5. Initialize the raw patterns](#5-initialize-the-raw-patterns)
+  - [6. Adapt the patterns for the device that is used to transmit the patterns](#6-adapt-the-patterns-for-the-device-that-is-used-to-transmit-the-patterns)
+  - [7. Implement the start and stop methods](#7-implement-the-start-and-stop-methods)
+  - [8. Transmit the adapted patterns via IR](#8-transmit-the-adapted-patterns-via-ir)
+  - [In addition](#in-addition)
 - **Details**
 
 ## Basis
-
 
 ### Basic theory
 
@@ -70,3 +75,151 @@ For example
 To covert a microsecond pattern to a cycle pattern, divide each value by _T_
 
 To convert a cycle pattern to a microsecond pattern, simply multiply each value by _T_
+
+## How to use
+
+### 0. Include the InfraRed library to your project
+
+- Download the [AndroidInfraRed](https://github.com/OneButtonDeveloper/AndroidInfraRed) project
+- Run the project on a device or an emulator 
+- Find the **infrared-release.aar** file in the project folder _(infrared/build/outputs/aar/infrared-release.aar)_
+- Import this file into your own project in Android Studio
+  _(File > New > New Module... > Import .JAR/.AAR package)_
+
+**Known issue:** One of the project files contains broken characters. Just rename it again.
+
+### 1. Add the following permissions to your AndroidManifest.xml
+
+```xml
+	<uses-permission android:name="android.permission.TRANSMIT_IR" android:required="false"/>
+	<uses-feature android:name="android.hardware.consumerir" android:required="false"/>
+```
+ 
+### 2. Initialize logging
+
+You can choose between printing your logs to an _EditText_ view ([_LogToEditText_](https://github.com/OneButtonDeveloper/AndroidInfraRed/blob/master/infrared/src/main/java/com/obd/infrared/log/LogToEditText.java)), the _LogCat_ console ([_LogToConsole_](https://github.com/OneButtonDeveloper/AndroidInfraRed/blob/master/infrared/src/main/java/com/obd/infrared/log/LogToConsole.java)) and not logging at all ([_LogToAir_](https://github.com/OneButtonDeveloper/AndroidInfraRed/blob/master/infrared/src/main/java/com/obd/infrared/log/LogToAir.java))
+
+```java
+	// print log messages to EditText
+	EditText console = (EditText) this.findViewById(R.id.console);
+	log = new LogToEditText(console, TAG);
+
+	// print Log messages with Log.d(), Log.w(), Log.e() (LogCat)
+	// LogToConsole log = new LogToConsole(TAG);
+
+	// Turn off logs
+	// LogToAir log = new LogToAir(TAG);
+```
+[_LogToEditText_](https://github.com/OneButtonDeveloper/AndroidInfraRed/blob/master/infrared/src/main/java/com/obd/infrared/log/LogToEditText.java) is the default option
+
+### 3. Initialize the [**InfraRed**](https://github.com/OneButtonDeveloper/AndroidInfraRed/blob/master/infrared/src/main/java/com/obd/infrared/InfraRed.java) class
+
+Create a new [_InfraRed_](https://github.com/OneButtonDeveloper/AndroidInfraRed/blob/master/infrared/src/main/java/com/obd/infrared/InfraRed.java) object with the parameters _Context_ and [_Logger_](https://github.com/OneButtonDeveloper/AndroidInfraRed/blob/master/infrared/src/main/java/com/obd/infrared/log/Logger.java)
+
+```java
+	infraRed = new InfraRed(this, log);
+```
+
+### 4. Initialize the transmitter
+
+```java
+	TransmitterType transmitterType = infraRed.detect();
+
+	// initialize transmitter by type
+	infraRed.createTransmitter(transmitterType);
+```
+
+The "detect()" method returns the [_TransmitterType_](https://github.com/OneButtonDeveloper/AndroidInfraRed/blob/master/infrared/src/main/java/com/obd/infrared/transmit/TransmitterType.java). Possible values:  
+
+* Actual - The signals will be transmitted by the ConsumerIrManager  
+* Obsolete - The signals will be transmitted by a Samsung IR service
+* HTC - The signals will be transmitted by the HTC IR SDK
+* LG, LG_WithOutDevice - The signals will be transmitted by the QRemote SDK
+* Undefined - the "empty" implementation will be used to transmitt the signals
+
+### 5. Initialize the raw patterns
+
+```java
+	// initialize raw patterns
+	List<PatternConverter> rawPatterns = new ArrayList<>();
+	// Canon
+	// rawPatterns.add(new PatternConverter(PatternType.Intervals, 33000, 500, 7300, 500, 200));
+	// Nikon D7100 v.1
+	rawPatterns.add(new PatternConverter(PatternType.Cycles, 38400, 1, 105, 5, 1, 75, 1095, 20, 60, 20, 140, 15, 2500, 80, 1));
+	// Nikon D7100 v.2
+	rawPatterns.add(new PatternConverter(PatternType.Cycles, 38400, 77, 1069, 16, 61, 16, 137, 16, 2427, 77, 1069, 16, 61, 16, 137, 16));
+	// Nikon D7100 v.3
+	rawPatterns.add(new PatternConverter(PatternType.Intervals, 38000, 2000, 27800, 400, 1600, 400, 3600, 400, 200));
+	// Nikon D7100 v.3 fromString
+	rawPatterns.add(PatternConverterUtils.fromString(PatternType.Intervals, 38000, "2000, 27800, 400, 1600, 400, 3600, 400, 200"));
+	// Nikon D7100 v.3 fromHexString
+	rawPatterns.add(PatternConverterUtils.fromHexString(PatternType.Intervals, 38000, "0x7d0 0x6c98 0x190 0x640 0x190 0xe10 0x190 0xc8"));
+	// Nikon D7100 v.3 fromHexString without 0x
+	rawPatterns.add(PatternConverterUtils.fromHexString(PatternType.Intervals, 38000, "7d0 6c98 190 640 190 e10 190 c8"));
+```
+
+The [_PatternConverter_](https://github.com/OneButtonDeveloper/AndroidInfraRed/blob/master/infrared/src/main/java/com/obd/infrared/patterns/PatternConverter.java) can be used to easily define and convert IR patterns between the different patterns types (Cycles and Intervals in ms)
+
+### 6. Adapt the patterns for the device that is used to transmit the patterns
+
+```java
+	PatternAdapter patternAdapter = new PatternAdapter(log);
+	
+	// initialize TransmitInfoArray
+	TransmitInfo[] transmitInfoArray = new TransmitInfo[rawPatterns.size()];
+	for (int i = 0; i < transmitInfoArray.length; i++) {
+	    transmitInfoArray[i] = patternAdapter.createTransmitInfo(rawPatterns.get(i));
+	}
+	this.patterns = transmitInfoArray;
+```
+
+[_PatternAdapter_](https://github.com/OneButtonDeveloper/AndroidInfraRed/blob/master/infrared/src/main/java/com/obd/infrared/patterns/PatternAdapter.java) automatically detects the device's manufacturer (_LG_/_HTC_/_Samsung_) and uses that information to determine how the raw patterns have to be converted in order to be compatible with the transmitter of the used device.
+
+### 7. Implement the start and stop methods
+
+```java
+    @Override
+    protected void onResume() {
+        super.onResume();
+        infraRed.start();
+    }
+   
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        infraRed.stop();
+
+        if (log != null) {
+            log.destroy();
+        }
+    }
+```
+
+Always call the _start()_ method before transmit IR signals and call the _stop()_ method when you are done.
+
+It is a **good idea** to call them in the _onCreate_/_onDestroy_ or _onResume_/_onPause_ methods.
+
+
+### 8. Transmit the adapted patterns via IR
+
+```java
+    private int currentPattern = 0;
+
+    @Override
+    public void onClick(View v) {
+        TransmitInfo transmitInfo = patterns[currentPattern++];
+        if (currentPattern >= patterns.length) currentPattern = 0;
+        infraRed.transmit(transmitInfo);
+    }
+```
+
+Now we can send IR signals ([_TransmitInfo_](https://github.com/OneButtonDeveloper/AndroidInfraRed/blob/master/infrared/src/main/java/com/obd/infrared/transmit/TransmitInfo.java)) to the device we want to control
+
+### In addition
+
+Examples for the individual steps can be found in this project
+
+- Step 1 in [AndroidManifest.xml](https://github.com/OneButtonDeveloper/AndroidInfraRed/blob/master/infrared/src/main/AndroidManifest.xml)
+- Steps 2..8 in [MainActivity.java](https://github.com/OneButtonDeveloper/AndroidInfraRed/blob/master/app/src/main/java/com/obd/infrared/sample/MainActivity.java)
+
