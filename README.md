@@ -86,7 +86,9 @@ To convert a cycle pattern to a microsecond pattern, simply multiply each value 
 - Import this file into your own project in Android Studio
   _(File > New > New Module... > Import .JAR/.AAR package)_
 
-**Known issue:** One of the project files contains broken characters. Just rename it again.
+**Tip!** Your can download the **infrared-release.aar** file from [releases](https://github.com/OneButtonDeveloper/AndroidInfraRed/releases/download/v3.0/infrared-release.aar)
+
+**Known issue!** One of the project files contains broken characters. Just rename it again.
 
 ### 1. Add the following permissions to your AndroidManifest.xml
 
