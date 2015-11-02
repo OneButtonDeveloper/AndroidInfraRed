@@ -45,7 +45,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         // LogToAir log = new LogToAir(TAG);
 
         infraRed = new InfraRed(this, log);
-        // detect transmitter type (ConsumerIrManager, Samsung obsolete service or HTC IR SDK)
+        // detect transmitter type
         TransmitterType transmitterType = infraRed.detect();
 
         // initialize transmitter by type
@@ -55,24 +55,23 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         List<PatternConverter> rawPatterns = new ArrayList<>();
         // Canon
         // rawPatterns.add(new PatternConverter(PatternType.Intervals, 33000, 500, 7300, 500, 200));
-        // Nikon D7100 v.1
+        // Nikon v.1
         rawPatterns.add(new PatternConverter(PatternType.Cycles, 38400, 1, 105, 5, 1, 75, 1095, 20, 60, 20, 140, 15, 2500, 80, 1));
-        // Nikon D7100 v.2
+        // Nikon v.2
         rawPatterns.add(new PatternConverter(PatternType.Cycles, 38400, 77, 1069, 16, 61, 16, 137, 16, 2427, 77, 1069, 16, 61, 16, 137, 16));
-        // Nikon D7100 v.3
+        // Nikon v.3
         rawPatterns.add(new PatternConverter(PatternType.Intervals, 38000, 2000, 27800, 400, 1600, 400, 3600, 400, 200));
-        // Nikon D7100 v.3 fromString
+        // Nikon v.3 fromString
         rawPatterns.add(PatternConverterUtils.fromString(PatternType.Intervals, 38000, "2000, 27800, 400, 1600, 400, 3600, 400, 200"));
-        // Nikon D7100 v.3 fromHexString
+        // Nikon v.3 fromHexString
         rawPatterns.add(PatternConverterUtils.fromHexString(PatternType.Intervals, 38000, "0x7d0 0x6c98 0x190 0x640 0x190 0xe10 0x190 0xc8"));
-        // Nikon D7100 v.3 fromHexString without 0x
+        // Nikon v.3 fromHexString without 0x
         rawPatterns.add(PatternConverterUtils.fromHexString(PatternType.Intervals, 38000, "7d0 6c98 190 640 190 e10 190 c8"));
 
 
-        // initialize converter for convert pulse patterns to time patterns for Android 5.0 (Lollipop) or to Samsung obsolete service format
+        // adapt the patterns for the device that is used to transmit the patterns
         PatternAdapter patternAdapter = new PatternAdapter(log);
 
-        // initialize TransmitInfoArray
         TransmitInfo[] transmitInfoArray = new TransmitInfo[rawPatterns.size()];
         for (int i = 0; i < transmitInfoArray.length; i++) {
             transmitInfoArray[i] = patternAdapter.createTransmitInfo(rawPatterns.get(i));

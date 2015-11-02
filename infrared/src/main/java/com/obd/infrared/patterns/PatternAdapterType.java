@@ -6,22 +6,25 @@ import com.obd.infrared.detection.DeviceDetector;
 
 public enum PatternAdapterType {
 
-    None,
+    ToCycles,
+    ToIntervals,
     ToObsoleteSamsungString,
-    ToTimeLengthPattern,
-    ToPulsesHtcPattern;
+    ToCyclesHtcPattern;
 
     public static PatternAdapterType getConverterType() {
         if (DeviceDetector.isSamsung()) {
             return getConverterTypeForSamsung();
         }
         if (DeviceDetector.isLg()) {
-            return PatternAdapterType.ToTimeLengthPattern;
+            return PatternAdapterType.ToIntervals;
         }
         if (DeviceDetector.isHtc()) {
-            return PatternAdapterType.ToPulsesHtcPattern;
+            return PatternAdapterType.ToCyclesHtcPattern;
         }
-        return PatternAdapterType.None;
+        /**
+         * {@link android.hardware.ConsumerIrManager#transmit(int, int[])} used microseconds (time intervals)
+         */
+        return PatternAdapterType.ToIntervals;
     }
 
 
@@ -30,16 +33,16 @@ public enum PatternAdapterType {
      */
     private static PatternAdapterType getConverterTypeForSamsung() {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
-            return PatternAdapterType.ToTimeLengthPattern;
+            return PatternAdapterType.ToIntervals;
         } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
             int lastIdx = Build.VERSION.RELEASE.lastIndexOf(".");
             int VERSION_MR = Integer.valueOf(Build.VERSION.RELEASE.substring(lastIdx + 1));
             if (VERSION_MR < 3) {
                 // Before version of Android 4.4.2
-                return PatternAdapterType.None;
+                return PatternAdapterType.ToCycles;
             } else {
                 // Later version of Android 4.4.3
-                return PatternAdapterType.ToTimeLengthPattern;
+                return PatternAdapterType.ToIntervals;
             }
         } else {
             // Before version of Android 4

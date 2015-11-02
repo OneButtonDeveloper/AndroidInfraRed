@@ -19,44 +19,46 @@ public class PatternAdapter {
     public static TransmitInfo createTransmitInfo(PatternAdapterType converterType, PatternConverter patternConverter) {
         int[] pattern;
         switch (converterType) {
+            case ToCycles:
+                pattern = patternConverter.convertDataTo(PatternType.Cycles);
+                break;
+            case ToIntervals:
+                pattern = patternConverter.convertDataTo(PatternType.Intervals);
+                break;
+            case ToCyclesHtcPattern:
+                pattern = convertToCyclesHtcPattern(patternConverter.convertDataTo(PatternType.Cycles));
+                break;
             case ToObsoleteSamsungString:
                 Object[] obsoletePattern = createObsoletePattern(patternConverter.getFrequency(), patternConverter.convertDataTo(PatternType.Cycles));
                 return new TransmitInfo(patternConverter.getFrequency(), obsoletePattern);
-            case ToPulsesHtcPattern:
-                pattern = convertToPulsesHtcPattern(patternConverter.convertDataTo(PatternType.Cycles));
-                break;
-            case ToTimeLengthPattern:
-                pattern = convertToPulsesHtcPattern(patternConverter.convertDataTo(PatternType.Intervals));
-                break;
             default:
-                pattern = convertToPulsesHtcPattern(patternConverter.convertDataTo(PatternType.Intervals));
-                break;
+                throw new IllegalArgumentException("PatternAdapterType " + converterType + " not supported");
         }
         return new TransmitInfo(patternConverter.getFrequency(), pattern);
     }
 
 
-    private static Object[] createObsoletePattern(int frequency, int[] pulseCountPattern) {
+    private static Object[] createObsoletePattern(int frequency, int[] cycleCountPattern) {
         StringBuilder result = new StringBuilder();
         result.append(frequency);
-        for (Integer i : pulseCountPattern) {
+        for (Integer i : cycleCountPattern) {
             result.append(',');
             result.append(i);
         }
         return new Object[]{result.toString()};
     }
 
-    private static int[] convertToPulsesHtcPattern(int[] pulseCountPattern) {
-        int count = pulseCountPattern.length;
+    private static int[] convertToCyclesHtcPattern(int[] cycleCountPattern) {
+        int count = cycleCountPattern.length;
         boolean isEven = count % 2 == 0;
         if (isEven) {
-            return pulseCountPattern;
+            return cycleCountPattern;
         } else {
             count += 1;
         }
 
         int[] newPattern = new int[count];
-        System.arraycopy(pulseCountPattern, 0, newPattern, 0, pulseCountPattern.length);
+        System.arraycopy(cycleCountPattern, 0, newPattern, 0, cycleCountPattern.length);
         newPattern[count - 1] = 10;
         return newPattern;
     }

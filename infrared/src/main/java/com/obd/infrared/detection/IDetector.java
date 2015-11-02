@@ -4,6 +4,6 @@ package com.obd.infrared.detection;
 import com.obd.infrared.transmit.TransmitterType;
 
 public interface IDetector {
-    public boolean hasTransmitter(InfraRedDetector.DetectorParams detectorParams);
-    public TransmitterType getTransmitterType();
+    boolean hasTransmitter(InfraRedDetector.DetectorParams detectorParams);
+    TransmitterType getTransmitterType();
 }
