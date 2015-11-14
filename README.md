@@ -30,7 +30,14 @@ Email: one.button.developer@gmail.com
   - [7. Implement the start and stop methods](#7-implement-the-start-and-stop-methods)
   - [8. Transmit the adapted patterns via IR](#8-transmit-the-adapted-patterns-via-ir)
   - [In addition](#in-addition)
-- **Details**
+- **[What's in the box?](#whats-in-the-box)**
+  - [Android project - Sample application](#android-project---sample-application)
+  - [Android library - Infrared](#android-library---infrared)
+    - [Logging package](#logging-package)
+    - [Pattern package](#pattern-package)
+    - [Detection package](#detection-package)
+    - [Transmit package](#transmit-package)
+    - [Infrared class](#infrared-class)
 
 ## Basis
 
@@ -225,3 +232,82 @@ Examples for the individual steps can be found in this project
 - Step 1 in [AndroidManifest.xml](https://github.com/OneButtonDeveloper/AndroidInfraRed/blob/master/infrared/src/main/AndroidManifest.xml)
 - Steps 2..8 in [MainActivity.java](https://github.com/OneButtonDeveloper/AndroidInfraRed/blob/master/app/src/main/java/com/obd/infrared/sample/MainActivity.java)
 
+## What's in the box? 
+
+
+### Android Project - [Sample Application](https://github.com/OneButtonDeveloper/AndroidInfraRed/tree/master/app) 
+
+The sample project gives you an idea how the infrared library is supposed to be used. The project contains an activity ([MainActivity.java](https://github.com/OneButtonDeveloper/AndroidInfraRed/blob/master/app/src/main/java/com/obd/infrared/sample/MainActivity.java)) with a predefined layout ([activity_main.xml](AndroidInfraRed/app/src/main/res/layout/activity_main.xml)). The layout contains a console ([EditText](http://developer.android.com/intl/ru/reference/android/widget/EditText.html)) and a IR button. 
+
+The _onCreate()_ method contains the full initialization of the [InfraRed](https://github.com/OneButtonDeveloper/AndroidInfraRed/blob/master/infrared/src/main/java/com/obd/infrared/InfraRed.java) library
+
+When you run the application, the console will show you what is happening inside the library. When you click on the button, the IR blaster on your device will send a IR signal, of course only if your device is supported by the library. 
+
+Please note that you wont get any runtime exceptions because your device is not supported.
+
+Logging to a [EditText](http://developer.android.com/intl/ru/reference/android/widget/EditText.html) can be quite useful when you want to understand what's happening on your customer's devices. I often send special .apk files to users in order to obtain a log from their devices. 
+
+ 
+
+### Android Library - [**Infrared**](https://github.com/OneButtonDeveloper/AndroidInfraRed/tree/master/infrared)
+
+This library allows you to easily create raw IR signals in code, to detect device types and adapt raw signals for specific devices, to detect the devices' IR transmitters and to use them to send the adapted IR signals to a devices with a IR receiver. 
+
+The [Library](https://github.com/OneButtonDeveloper/AndroidInfraRed/tree/master/infrared) consists of several packages that are explained below. 
+
+
+#### [Logging package](https://github.com/OneButtonDeveloper/AndroidInfraRed/tree/master/infrared/src/main/java/com/obd/infrared/log)
+
+Provides different ways to log data. All classes in this package inherit from the [Logger](AndroidInfraRed/infrared/src/main/java/com/obd/infrared/log/Logger.java) class.  
+
+[LogToConsole](AndroidInfraRed/infrared/src/main/java/com/obd/infrared/log/LogToConsole.java) is useful when your can debug the application on a device that is connected to an IDE with LogCat. 
+
+[LogToEditText](https://github.com/OneButtonDeveloper/AndroidInfraRed/blob/master/infrared/src/main/java/com/obd/infrared/log/LogToEditText.java) can be used to to display the log messages on the user's screen.
+
+[LogToAir](https://github.com/OneButtonDeveloper/AndroidInfraRed/blob/master/infrared/src/main/java/com/obd/infrared/log/LogToAir.java) won't log anything (you can apply this in your application's release version)
+
+
+#### [Pattern package](https://github.com/OneButtonDeveloper/AndroidInfraRed/tree/master/infrared/src/main/java/com/obd/infrared/patterns)
+
+Enum [PatternType](https://github.com/OneButtonDeveloper/AndroidInfraRed/blob/master/infrared/src/main/java/com/obd/infrared/patterns/PatternType.java) tetermines the type of the IR signals in an integer array (a single value in the array is either the number of cycles or the time interval in microseconds).
+
+The [PatternConverter](https://github.com/OneButtonDeveloper/AndroidInfraRed/blob/master/infrared/src/main/java/com/obd/infrared/patterns/PatternConverter.java) class allows you to convert patterns from one pattern type to another.  
+
+The [PatternConverterUtils](https://github.com/OneButtonDeveloper/AndroidInfraRed/blob/master/infrared/src/main/java/com/obd/infrared/patterns/PatternConverterUtils.java) class can be used to create PatternConverter objects from strings containing a pattern in the DEC or HEX numeral system. 
+
+[PatternAdapterType](https://github.com/OneButtonDeveloper/AndroidInfraRed/blob/master/infrared/src/main/java/com/obd/infrared/patterns/PatternAdapterType.java) enum contains values that are required to convert raw patterns. It also includes a method that determines which pattern type will be in use on the current device. It returns _ToIntervals_ by default, which will convert all raw patterns to time interval based patterns. 
+
+The [PatternAdapter](https://github.com/OneButtonDeveloper/AndroidInfraRed/blob/master/infrared/src/main/java/com/obd/infrared/patterns/PatternAdapter.java) class will help you to adapt [PatternConverter](https://github.com/OneButtonDeveloper/AndroidInfraRed/blob/master/infrared/src/main/java/com/obd/infrared/patterns/PatternConverter.java) instances to [TransmitInfo](https://github.com/OneButtonDeveloper/AndroidInfraRed/blob/master/infrared/src/main/java/com/obd/infrared/transmit/TransmitInfo.java) objects according to the [PatternAdapterType](https://github.com/OneButtonDeveloper/AndroidInfraRed/blob/master/infrared/src/main/java/com/obd/infrared/patterns/PatternAdapterType.java) enum. 
+
+
+#### [Detection package](https://github.com/OneButtonDeveloper/AndroidInfraRed/tree/master/infrared/src/main/java/com/obd/infrared/detection)
+
+The [DeviceDetector](https://github.com/OneButtonDeveloper/AndroidInfraRed/blob/master/infrared/src/main/java/com/obd/infrared/detection/DeviceDetector.java) class is used to determine the manufacturer of the user's device by checking Android's Build.MANUFACTURER constant. This information is required in order to adapt the IR signals correctly. 
+
+The [InfraRedDetector](https://github.com/OneButtonDeveloper/AndroidInfraRed/blob/master/infrared/src/main/java/com/obd/infrared/detection/InfraRedDetector.java) class checks if the devices has a built-in IR blaster. This procedure may vary depending on the IR Blaster, so there are a few different classes for this feature with a common interface named [IDetector](https://github.com/OneButtonDeveloper/AndroidInfraRed/blob/master/infrared/src/main/java/com/obd/infrared/detection/IDetector.java). Concrete implementations of the [IDetector](https://github.com/OneButtonDeveloper/AndroidInfraRed/blob/master/infrared/src/main/java/com/obd/infrared/detection/IDetector.java) can be found in the _["infrared/detection/concrete"](https://github.com/OneButtonDeveloper/AndroidInfraRed/tree/master/infrared/src/main/java/com/obd/infrared/detection/concrete)_ folder. 
+
+[InfraRedDetector](https://github.com/OneButtonDeveloper/AndroidInfraRed/blob/master/infrared/src/main/java/com/obd/infrared/detection/InfraRedDetector.java) has a main function _detect()_ that verifies the availability of each initialized detector and returns corresponding [TransmitterType](https://github.com/OneButtonDeveloper/AndroidInfraRed/blob/master/infrared/src/main/java/com/obd/infrared/transmit/TransmitterType.java). The method returns _TransmitterType.Undefined_ if the device is not supported. 
+
+
+#### [Transmit package](https://github.com/OneButtonDeveloper/AndroidInfraRed/tree/master/infrared/src/main/java/com/obd/infrared/transmit)
+
+[TransmitterType](https://github.com/OneButtonDeveloper/AndroidInfraRed/blob/master/infrared/src/main/java/com/obd/infrared/transmit/TransmitterType.java) enum contains the supported transmitters which also includes the Undefined transmitter. 
+
+The [TransmitInfo](https://github.com/OneButtonDeveloper/AndroidInfraRed/blob/master/infrared/src/main/java/com/obd/infrared/transmit/TransmitInfo.java) class contains the adapted IR signal data that will be send by the device's IR blaster. 
+
+The [Transmitter](https://github.com/OneButtonDeveloper/AndroidInfraRed/blob/master/infrared/src/main/java/com/obd/infrared/transmit/Transmitter.java) class the is general interface type for all transmitters. Concrete implementations of them can be found in the _["infrared/transmit/concrete"](https://github.com/OneButtonDeveloper/AndroidInfraRed/tree/master/infrared/src/main/java/com/obd/infrared/transmit/concrete)_ folder. Each transmitter can implement _start()_ and _stop()_ methods and must have a transmit function that sends the pattern data with a [TransmitInfo](https://github.com/OneButtonDeveloper/AndroidInfraRed/blob/master/infrared/src/main/java/com/obd/infrared/transmit/TransmitInfo.java). 
+
+A [Transmitter](https://github.com/OneButtonDeveloper/AndroidInfraRed/blob/master/infrared/src/main/java/com/obd/infrared/transmit/Transmitter.java) can initialize concrete transmitters based on the [TransmitterType](https://github.com/OneButtonDeveloper/AndroidInfraRed/blob/master/infrared/src/main/java/com/obd/infrared/transmit/TransmitterType.java). 
+
+
+#### [InfraRed class](https://github.com/OneButtonDeveloper/AndroidInfraRed/blob/master/infrared/src/main/java/com/obd/infrared/InfraRed.java)
+
+The [InfraRed](https://github.com/OneButtonDeveloper/AndroidInfraRed/blob/master/infrared/src/main/java/com/obd/infrared/InfraRed.java) class integrate packages functionality to easily use library. 
+
+1. Create [InfraRed](https://github.com/OneButtonDeveloper/AndroidInfraRed/blob/master/infrared/src/main/java/com/obd/infrared/InfraRed.java) class
+2. Call the _detect()_ method to get the [TransmitterType](https://github.com/OneButtonDeveloper/AndroidInfraRed/blob/master/infrared/src/main/java/com/obd/infrared/transmit/TransmitterType.java) 
+3. Call the _createTransmitter()_ method to initialize a concrete transmitter  
+4. Call the _start()_ method
+5. Send different IR signals ([TransmitInfo](https://github.com/OneButtonDeveloper/AndroidInfraRed/blob/master/infrared/src/main/java/com/obd/infrared/transmit/TransmitInfo.java) objects) with the _transmit()_ function 
+
+**!** Don't forget to call _stop()_ once you are done!
