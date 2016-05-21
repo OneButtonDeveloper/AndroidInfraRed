@@ -6,5 +6,6 @@ public enum TransmitterType {
     Actual,   // ConsumerIRManager
     HTC,
     LG,
-    LG_WithOutDevice
+    LG_WithOutDevice,
+    LG_Actual // ConsumerIRManager
 }

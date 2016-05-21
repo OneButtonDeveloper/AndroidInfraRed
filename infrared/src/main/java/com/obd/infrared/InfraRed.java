@@ -12,7 +12,7 @@ import com.obd.infrared.transmit.TransmitterType;
 
 public class InfraRed {
 
-    private static final String VERSION = "InfraRed v3.1";
+    private static final String VERSION = "InfraRed v3.3";
 
     private final Context context;
     private final Logger logger;

@@ -1,5 +1,6 @@
 package com.obd.infrared.sample;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
@@ -47,6 +48,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         infraRed = new InfraRed(this, log);
         // detect transmitter type
         TransmitterType transmitterType = infraRed.detect();
+        log.log("TransmitterType: " + transmitterType);
 
         // initialize transmitter by type
         infraRed.createTransmitter(transmitterType);
@@ -68,6 +70,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         // Nikon v.3 fromHexString without 0x
         rawPatterns.add(PatternConverterUtils.fromHexString(PatternType.Intervals, 38000, "7d0 6c98 190 640 190 e10 190 c8"));
 
+        logDeviceInfo();
 
         // adapt the patterns for the device that is used to transmit the patterns
         PatternAdapter patternAdapter = new PatternAdapter(log);
@@ -84,6 +87,17 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     }
 
+    private void logDeviceInfo() {
+        log.log("BRAND: " + Build.BRAND);
+        log.log("DEVICE: " + Build.DEVICE);
+        log.log("MANUFACTURER: " + Build.MANUFACTURER);
+        log.log("MODEL: " + Build.MODEL);
+        log.log("PRODUCT: " + Build.PRODUCT);
+        log.log("CODENAME: " + Build.VERSION.CODENAME);
+        log.log("RELEASE: " + Build.VERSION.RELEASE);
+        log.log("SDK_INT: " + Build.VERSION.SDK_INT);
+    }
+
 
     @Override
     protected void onResume() {
@@ -96,6 +110,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
+        log.log("Version: " + currentPattern);
         TransmitInfo transmitInfo = patterns[currentPattern++];
         if (currentPattern >= patterns.length) currentPattern = 0;
         infraRed.transmit(transmitInfo);

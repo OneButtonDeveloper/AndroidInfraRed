@@ -26,6 +26,10 @@ public class ActualDetector implements IDetector {
             ConsumerIrManager consumerIrManager = (ConsumerIrManager) detectorParams.context.getSystemService(CONSUMER_IR_SERVICE);
             if (consumerIrManager.hasIrEmitter()) {
 
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    logCarrierFrequencies(detectorParams, consumerIrManager);
+                }
+
                 detectorParams.logger.log("CONSUMER_IR_SERVICE: must be included TRANSMIT_IR permission to AndroidManifest.xml");
                 TransmitInfo transmitInfo = new TransmitInfo(38000, new int[]{100, 100, 100, 100});
                 consumerIrManager.transmit(transmitInfo.frequency, transmitInfo.pattern);
@@ -39,6 +43,23 @@ public class ActualDetector implements IDetector {
         } catch (Exception e) {
             detectorParams.logger.error("On actual transmitter error", e);
             return false;
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    private void logCarrierFrequencies(InfraRedDetector.DetectorParams detectorParams, ConsumerIrManager consumerIrManager) {
+        try {
+            ConsumerIrManager.CarrierFrequencyRange[] carrierFrequencies = consumerIrManager.getCarrierFrequencies();
+            if (carrierFrequencies != null && carrierFrequencies.length > 0) {
+                for (ConsumerIrManager.CarrierFrequencyRange carrierFrequencyRange : carrierFrequencies) {
+                    detectorParams.logger.log("carrierFrequencyRange: MIN" + carrierFrequencyRange.getMinFrequency());
+                    detectorParams.logger.log("carrierFrequencyRange: MAX" + carrierFrequencyRange.getMaxFrequency());
+                }
+            } else {
+                detectorParams.logger.log("carrierFrequencies is empty or null");
+            }
+        } catch (Exception e) {
+            detectorParams.logger.error("getCarrierFrequencies", e);
         }
     }
 

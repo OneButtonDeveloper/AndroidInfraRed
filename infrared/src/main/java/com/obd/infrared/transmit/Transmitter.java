@@ -25,6 +25,8 @@ public abstract class Transmitter {
                 return new LgWithDeviceTransmitter(context, logger);
             case LG_WithOutDevice:
                 return new LgWithoutDeviceTransmitter(context, logger);
+            case LG_Actual:
+                return new ActualTransmitter(context, logger);
             default:
                 return new UndefinedTransmitter(context, logger);
         }
