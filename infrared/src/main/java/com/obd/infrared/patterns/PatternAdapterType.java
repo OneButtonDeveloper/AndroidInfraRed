@@ -3,6 +3,7 @@ package com.obd.infrared.patterns;
 import android.os.Build;
 
 import com.obd.infrared.detection.DeviceDetector;
+import com.obd.infrared.transmit.TransmitterType;
 
 public enum PatternAdapterType {
 
@@ -11,7 +12,11 @@ public enum PatternAdapterType {
     ToObsoleteSamsungString,
     ToCyclesHtcPattern;
 
-    public static PatternAdapterType getConverterType() {
+    public static PatternAdapterType getConverterType(TransmitterType transmitterType) {
+        if (transmitterType == TransmitterType.Undefined) {
+            // to make possible easily get pattern duration in ms for play pattern as audio
+            return PatternAdapterType.ToIntervals;
+        }
         if (DeviceDetector.isSamsung()) {
             return getConverterTypeForSamsung();
         }

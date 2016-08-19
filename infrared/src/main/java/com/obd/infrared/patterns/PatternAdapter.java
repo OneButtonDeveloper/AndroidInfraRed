@@ -2,13 +2,14 @@ package com.obd.infrared.patterns;
 
 import com.obd.infrared.log.Logger;
 import com.obd.infrared.transmit.TransmitInfo;
+import com.obd.infrared.transmit.TransmitterType;
 
 public class PatternAdapter {
 
     private final PatternAdapterType adapterType;
 
-    public PatternAdapter(Logger logger) {
-        adapterType = PatternAdapterType.getConverterType();
+    public PatternAdapter(Logger logger, TransmitterType transmitterType) {
+        adapterType = PatternAdapterType.getConverterType(transmitterType);
         logger.log("ConverterType: " + adapterType);
     }
 

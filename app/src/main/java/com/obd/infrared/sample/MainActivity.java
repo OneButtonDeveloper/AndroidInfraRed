@@ -50,30 +50,37 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         TransmitterType transmitterType = infraRed.detect();
         log.log("TransmitterType: " + transmitterType);
 
+        // TODO remove
+        transmitterType = TransmitterType.Undefined;
+
         // initialize transmitter by type
         infraRed.createTransmitter(transmitterType);
 
         // initialize raw patterns
         List<PatternConverter> rawPatterns = new ArrayList<>();
+
         // Canon
-        // rawPatterns.add(new PatternConverter(PatternType.Intervals, 33000, 500, 7300, 500, 200));
-        // Nikon v.1
-        rawPatterns.add(new PatternConverter(PatternType.Cycles, 38400, 1, 105, 5, 1, 75, 1095, 20, 60, 20, 140, 15, 2500, 80, 1));
-        // Nikon v.2
-        rawPatterns.add(new PatternConverter(PatternType.Cycles, 38400, 77, 1069, 16, 61, 16, 137, 16, 2427, 77, 1069, 16, 61, 16, 137, 16));
-        // Nikon v.3
-        rawPatterns.add(new PatternConverter(PatternType.Intervals, 38000, 2000, 27800, 400, 1600, 400, 3600, 400, 200));
-        // Nikon v.3 fromString
-        rawPatterns.add(PatternConverterUtils.fromString(PatternType.Intervals, 38000, "2000, 27800, 400, 1600, 400, 3600, 400, 200"));
-        // Nikon v.3 fromHexString
-        rawPatterns.add(PatternConverterUtils.fromHexString(PatternType.Intervals, 38000, "0x7d0 0x6c98 0x190 0x640 0x190 0xe10 0x190 0xc8"));
-        // Nikon v.3 fromHexString without 0x
-        rawPatterns.add(PatternConverterUtils.fromHexString(PatternType.Intervals, 38000, "7d0 6c98 190 640 190 e10 190 c8"));
+        rawPatterns.add(new PatternConverter(PatternType.Intervals, 33000, 500, 7300, 500, 200));
+        rawPatterns.add(new PatternConverter(PatternType.Intervals, 33000, 555, 5250, 555, 7143, 555, 200));
+        rawPatterns.add(new PatternConverter(PatternType.Intervals, 33000, 555, 5250, 555, 7143, 555, 1000, 555, 5250, 555, 7143, 555, 1000));
+
+//        // Nikon v.1
+//        rawPatterns.add(new PatternConverter(PatternType.Cycles, 38400, 1, 105, 5, 1, 75, 1095, 20, 60, 20, 140, 15, 2500, 80, 1));
+//        // Nikon v.2
+//        rawPatterns.add(new PatternConverter(PatternType.Cycles, 38400, 77, 1069, 16, 61, 16, 137, 16, 2427, 77, 1069, 16, 61, 16, 137, 16));
+//        // Nikon v.3
+//        rawPatterns.add(new PatternConverter(PatternType.Intervals, 38000, 2000, 27800, 400, 1600, 400, 3600, 400, 200));
+//        // Nikon v.3 fromString
+//        rawPatterns.add(PatternConverterUtils.fromString(PatternType.Intervals, 38000, "2000, 27800, 400, 1600, 400, 3600, 400, 200"));
+//        // Nikon v.3 fromHexString
+//        rawPatterns.add(PatternConverterUtils.fromHexString(PatternType.Intervals, 38000, "0x7d0 0x6c98 0x190 0x640 0x190 0xe10 0x190 0xc8"));
+//        // Nikon v.3 fromHexString without 0x
+//        rawPatterns.add(PatternConverterUtils.fromHexString(PatternType.Intervals, 38000, "7d0 6c98 190 640 190 e10 190 c8"));
 
         logDeviceInfo();
 
         // adapt the patterns for the device that is used to transmit the patterns
-        PatternAdapter patternAdapter = new PatternAdapter(log);
+        PatternAdapter patternAdapter = new PatternAdapter(log, transmitterType);
 
         TransmitInfo[] transmitInfoArray = new TransmitInfo[rawPatterns.size()];
         for (int i = 0; i < transmitInfoArray.length; i++) {
