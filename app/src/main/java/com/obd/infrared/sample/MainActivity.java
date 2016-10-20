@@ -50,19 +50,18 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         TransmitterType transmitterType = infraRed.detect();
         log.log("TransmitterType: " + transmitterType);
 
-        // TODO remove
-        transmitterType = TransmitterType.Undefined;
-
         // initialize transmitter by type
         infraRed.createTransmitter(transmitterType);
 
         // initialize raw patterns
         List<PatternConverter> rawPatterns = new ArrayList<>();
 
+        // Pentax AF
+        rawPatterns.add(new PatternConverter(PatternType.Cycles, 38000,494,114,38,38,38,38,38,38,38,38,38,38,38,114,38,1));
         // Canon
-        rawPatterns.add(new PatternConverter(PatternType.Intervals, 33000, 500, 7300, 500, 200));
-        rawPatterns.add(new PatternConverter(PatternType.Intervals, 33000, 555, 5250, 555, 7143, 555, 200));
-        rawPatterns.add(new PatternConverter(PatternType.Intervals, 33000, 555, 5250, 555, 7143, 555, 1000, 555, 5250, 555, 7143, 555, 1000));
+//        rawPatterns.add(new PatternConverter(PatternType.Intervals, 33000, 500, 7300, 500, 200));
+//        rawPatterns.add(new PatternConverter(PatternType.Intervals, 33000, 555, 5250, 555, 7143, 555, 200));
+//        rawPatterns.add(new PatternConverter(PatternType.Intervals, 33000, 555, 5250, 555, 7143, 555, 1000, 555, 5250, 555, 7143, 555, 1000));
 
 //        // Nikon v.1
 //        rawPatterns.add(new PatternConverter(PatternType.Cycles, 38400, 1, 105, 5, 1, 75, 1095, 20, 60, 20, 140, 15, 2500, 80, 1));
