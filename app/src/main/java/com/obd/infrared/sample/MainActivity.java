@@ -11,7 +11,6 @@ import com.obd.infrared.InfraRed;
 import com.obd.infrared.log.LogToEditText;
 import com.obd.infrared.patterns.PatternAdapter;
 import com.obd.infrared.patterns.PatternConverter;
-import com.obd.infrared.patterns.PatternConverterUtils;
 import com.obd.infrared.patterns.PatternType;
 import com.obd.infrared.transmit.TransmitInfo;
 import com.obd.infrared.transmit.TransmitterType;
@@ -45,7 +44,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         // Turn off log
         // LogToAir log = new LogToAir(TAG);
 
-        infraRed = new InfraRed(this, log);
+        infraRed = new InfraRed(this.getApplication(), log);
         // detect transmitter type
         TransmitterType transmitterType = infraRed.detect();
         log.log("TransmitterType: " + transmitterType);

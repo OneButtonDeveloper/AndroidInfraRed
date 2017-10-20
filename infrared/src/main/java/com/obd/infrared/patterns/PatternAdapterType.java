@@ -20,7 +20,7 @@ public enum PatternAdapterType {
         if (DeviceDetector.isSamsung()) {
             return getConverterTypeForSamsung();
         }
-        if (DeviceDetector.isLg()) {
+        if (DeviceDetector.isLg() || DeviceDetector.isLe()) {
             return PatternAdapterType.ToIntervals;
         }
         if (DeviceDetector.isHtc()) {

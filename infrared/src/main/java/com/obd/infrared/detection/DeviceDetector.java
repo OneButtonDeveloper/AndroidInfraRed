@@ -16,6 +16,10 @@ public class DeviceDetector {
         return isDevice("HTC");
     }
 
+    public static boolean isLe() {
+        return isDevice("LE") || isDevice("LEECO") || isDevice("LETV") || isDevice("COOLPAD") || isDevice("LETVITWO");
+    }
+
     private static boolean isDevice(String manufactureName) {
         return Build.MANUFACTURER.equalsIgnoreCase(manufactureName);
     }

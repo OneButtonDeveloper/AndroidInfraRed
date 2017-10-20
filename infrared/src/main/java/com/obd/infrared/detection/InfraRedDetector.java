@@ -5,6 +5,7 @@ import android.os.Build;
 
 import com.obd.infrared.detection.concrete.ActualDetector;
 import com.obd.infrared.detection.concrete.HtcDetector;
+import com.obd.infrared.detection.concrete.LeDetector;
 import com.obd.infrared.detection.concrete.LgDetector;
 import com.obd.infrared.detection.concrete.ObsoleteSamsungDetector;
 import com.obd.infrared.log.Logger;
@@ -34,6 +35,7 @@ public class InfraRedDetector {
 
         this.detectors.add(new LgDetector());
         this.detectors.add(new HtcDetector());
+        this.detectors.add(new LeDetector());
         this.detectors.add(new ObsoleteSamsungDetector());
         this.detectors.add(new ActualDetector());
     }
