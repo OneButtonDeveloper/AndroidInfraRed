@@ -12,7 +12,8 @@ import com.obd.infrared.transmit.TransmitterType;
 
 public class InfraRed {
 
-    private static final String VERSION = "InfraRed v3.3";
+    // v3.4 -> Added support for Le Eco devices
+    private static final String VERSION = "InfraRed v3.4";
 
     private final Context context;
     private final Logger logger;
