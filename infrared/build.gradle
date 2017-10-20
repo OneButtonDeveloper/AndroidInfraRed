@@ -1,8 +1,7 @@
 apply plugin: 'com.android.library'
-
 android {
     compileSdkVersion 24
-    buildToolsVersion '23.0.2'
+    buildToolsVersion '26.0.2'
 
     defaultConfig {
         minSdkVersion 8
@@ -23,22 +22,18 @@ android {
         exclude 'AndroidManifest.xml'
     }
 }
-
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:24.1.1'
     compile files('libs/HTCIR.jar')
     compile files('libs/QRemoteSDK.jar')
 }
-
-
 task clearJar(type: Delete) {
     delete 'build/outputs/infrared.jar'
 }
-
 task makeJar(type: Copy) {
     from('build/intermediates/bundles/release/')
     into('build/outputs/')
     include('classes.jar')
-    rename ('classes.jar', 'infrared.jar')
+    rename('classes.jar', 'infrared.jar')
 }
