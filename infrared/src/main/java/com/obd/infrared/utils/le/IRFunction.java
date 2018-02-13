@@ -1,0 +1,67 @@
+package com.uei.control;
+
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.os.Parcelable.Creator;
+
+public class IRFunction implements Parcelable {
+    public static final Creator<IRFunction> CREATOR = new C07701();
+    public int Id;
+    public boolean IsLearned;
+    public Short LearnedCode;
+    public String Name;
+
+    class C07701 implements Creator<IRFunction> {
+        C07701() {
+        }
+
+        public IRFunction createFromParcel(Parcel in) {
+            return new IRFunction(in);
+        }
+
+        public IRFunction[] newArray(int size) {
+            return new IRFunction[size];
+        }
+    }
+
+    public IRFunction() {
+        this.Name = "";
+        this.Id = 0;
+        this.IsLearned = false;
+        this.LearnedCode = Short.valueOf((short) 0);
+    }
+
+    private IRFunction(Parcel in) {
+        this.Name = "";
+        this.Id = 0;
+        this.IsLearned = false;
+        this.LearnedCode = Short.valueOf((short) 0);
+        readFromParcel(in);
+    }
+
+    public int describeContents() {
+        return 0;
+    }
+
+    public void writeToParcel(Parcel dest, int flags) {
+    }
+
+    public void readFromParcel(Parcel in) {
+        boolean z = true;
+        try {
+            this.Id = in.readInt();
+            this.Name = in.readString();
+            if (in.readInt() != 1) {
+                z = false;
+            }
+            this.IsLearned = z;
+            this.LearnedCode = Short.valueOf((short) in.readInt());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public String toString() {
+        return this.Name;
+    }
+}
