@@ -1,18 +1,17 @@
-package com.uei.control;
+package com.obd.infrared.utils.le;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.os.Parcelable.Creator;
 
 public class IRFunction implements Parcelable {
-    public static final Creator<IRFunction> CREATOR = new C07701();
+    public static final Creator<IRFunction> CREATOR = new FunctionCreator();
     public int Id;
     public boolean IsLearned;
     public Short LearnedCode;
     public String Name;
 
-    class C07701 implements Creator<IRFunction> {
-        C07701() {
+    static class FunctionCreator implements Creator<IRFunction> {
+        FunctionCreator() {
         }
 
         public IRFunction createFromParcel(Parcel in) {

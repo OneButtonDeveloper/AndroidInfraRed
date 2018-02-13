@@ -5,15 +5,21 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.obd.infrared.detection.InfraRedDetector;
+import com.obd.infrared.devices.IrDevice;
 import com.obd.infrared.log.Logger;
 import com.obd.infrared.transmit.TransmitInfo;
 import com.obd.infrared.transmit.Transmitter;
 import com.obd.infrared.transmit.TransmitterType;
 
+import java.util.List;
+
 public class InfraRed {
 
+    // v3.5.2 -> Added duration for transmitting with devices
+    // v3.5.1 -> Fixed bug with getting Ir functions for Lg and Le
+    // v3.5 -> Added support for getting ir-devices for Lg and Le
     // v3.4 -> Added support for Le Eco devices
-    private static final String VERSION = "InfraRed v3.4";
+    private static final String VERSION = "InfraRed v3.5.2";
 
     private final Context context;
     private final Logger logger;
@@ -33,10 +39,20 @@ public class InfraRed {
 
 
     private Transmitter transmitter;
+    private TransmitterType transmitterType;
+
+    public boolean hasIrDevices() {
+        return transmitterType.hasIrDevices();
+    }
+
+    public boolean isReady() {
+        return transmitter != null && transmitter.isReady();
+    }
 
     public void createTransmitter(TransmitterType transmitterType) {
         if (transmitter == null) {
             try {
+                this.transmitterType = transmitterType;
                 transmitter = Transmitter.getTransmitterByType(transmitterType, context, logger);
             } catch (Exception e) {
                 logger.error("Error on create transmitter: " + transmitterType, e);
@@ -53,6 +69,24 @@ public class InfraRed {
         } catch (Exception e) {
             logger.error("Cannot transmit data", e);
             return false;
+        }
+    }
+
+    public List<IrDevice> getDevices() {
+        if (transmitterType.hasIrDevices()) {
+            logger.log("getIrDevices");
+            return transmitter.getIrDevices(logger);
+        } else {
+            logger.log("no IrDevices");
+            return null;
+        }
+    }
+
+    public void transmit(int deviceId, int functionId, int duration) {
+        if (transmitterType.hasIrDevices()) {
+            transmitter.transmit(deviceId, functionId, duration);
+        } else {
+            logger.log("Transmitting by device id " + deviceId + " and function id " + functionId + " with duration " + duration + " not supported");
         }
     }
 

@@ -6,12 +6,21 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Build;
 import android.os.IBinder;
-import android.os.Parcel;
 import android.os.RemoteException;
 
+import com.obd.infrared.devices.IrDevice;
+import com.obd.infrared.devices.IrFunction;
 import com.obd.infrared.log.Logger;
 import com.obd.infrared.transmit.TransmitInfo;
 import com.obd.infrared.transmit.Transmitter;
+import com.obd.infrared.utils.Constants;
+import com.obd.infrared.utils.le.Device;
+import com.obd.infrared.utils.le.IControl;
+import com.obd.infrared.utils.le.IRAction;
+import com.obd.infrared.utils.le.IRFunction;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Andrew on 20.10.2017
@@ -19,13 +28,21 @@ import com.obd.infrared.transmit.Transmitter;
 
 public class LeTransmitter extends Transmitter {
 
+    private ServiceConnection mControlServiceConnection = new ConnectorListener();
+    private IControl remoteControl;
+
     public LeTransmitter(Context context, Logger logger) {
         super(context, logger);
     }
 
     @Override
+    public boolean isReady() {
+        return remoteControl != null;
+    }
+
+    @Override
     public void transmit(TransmitInfo transmitInfo) {
-        if (remoteControl != null) {
+        if (isReady()) {
             try {
                 remoteControl.transmit(transmitInfo.frequency, transmitInfo.pattern);
             } catch (RemoteException e) {
@@ -34,12 +51,21 @@ public class LeTransmitter extends Transmitter {
         }
     }
 
-    private ServiceConnection mControlServiceConnection = new ConnectorListener();
-    public IControl remoteControl;
+    @Override
+    public void transmit(int deviceId, int functionId, int duration) {
+        if (isReady()) {
+            try {
+                logger.log("Transmitting with device id " + deviceId + " and function id " + functionId + " and duration " + duration);
+                remoteControl.sendIR(new IRAction(deviceId, functionId, duration));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     @Override
     public void start() {
-        final String UEICONTROLPACKAGE = Build.BRAND.contains("Coolpad") ? "com.uei.quicksetsdk.letvitwo" : "com.uei.quicksetsdk.letv";
+        final String UEICONTROLPACKAGE = Build.BRAND.contains("Coolpad") ? Constants.LE_COOLPAD_IR_SERVICE_PACKAGE : Constants.LE_DEFAULT_IR_SERVICE_PACKAGE_2;
 
         try {
             Intent controlIntent = new Intent(IControl.DESCRIPTOR);
@@ -60,6 +86,46 @@ public class LeTransmitter extends Transmitter {
         }
     }
 
+    @Override
+    public List<IrDevice> getIrDevices(Logger logger) {
+        try {
+            Device[] devices = remoteControl.getDevices();
+            logger.log("Devices from LE: " + (devices != null));
+            List<IrDevice> result = new ArrayList<>();
+            if (devices != null && devices.length > 0) {
+                logger.log("Devices size: " + devices.length);
+                for (Device device : devices) {
+                    IrDevice irDevice = new IrDevice(device.Id, device.Name);
+
+                    if (device.KeyFunctions != null && device.KeyFunctions.size() > 0) {
+                        for (IRFunction function : device.KeyFunctions) {
+                            IrFunction irFunction = new IrFunction(function.Id, function.Name, function.IsLearned);
+                            irDevice.addFunction(irFunction);
+                        }
+                        result.add(irDevice);
+                        continue;
+                    }
+
+                    if (device.Functions != null && device.Functions.length > 0) {
+                        String[] labelsByDevice = remoteControl.getAllFunctionLabelsByDevice(device.Id, device.Functions);
+                        for (int i = 0; i < device.Functions.length; i++) {
+                            IrFunction irFunction = new IrFunction(device.Functions[i], labelsByDevice[i], null);
+                            irDevice.addFunction(irFunction);
+                        }
+                        result.add(irDevice);
+                    }
+                }
+            }
+
+            return result;
+
+        } catch (Exception e) {
+            logger.error("LE", e);
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     private class ConnectorListener implements ServiceConnection {
         ConnectorListener() {
         }
@@ -70,39 +136,6 @@ public class LeTransmitter extends Transmitter {
 
         public void onServiceConnected(ComponentName name, IBinder service) {
             remoteControl = new IControl(service);
-        }
-    }
-
-    private static class IControl {
-        static final String DESCRIPTOR = "com.uei.control.IControl";
-
-        static final int TRANSACTION_TRANSMIT = 18;
-        private IBinder controlService = null;
-
-        IControl(IBinder service) {
-            this.controlService = service;
-        }
-
-        public int transmit(int carrierFrequency, int[] pattern) throws RemoteException {
-            Parcel _data = Parcel.obtain();
-            Parcel _reply = Parcel.obtain();
-            int _result = 1;
-            if (this.controlService != null) {
-                try {
-                    _data.writeInterfaceToken(DESCRIPTOR);
-                    _data.writeInt(carrierFrequency);
-                    _data.writeIntArray(pattern);
-                    this.controlService.transact(TRANSACTION_TRANSMIT, _data, _reply, 0);
-                    _reply.readException();
-                    _result = _reply.readInt();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                } finally {
-                    _reply.recycle();
-                    _data.recycle();
-                }
-            }
-            return _result;
         }
     }
 

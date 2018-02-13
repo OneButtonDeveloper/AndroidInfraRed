@@ -1,13 +1,13 @@
-package com.uei.control;
+package com.obd.infrared.utils.le;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.os.Parcelable.Creator;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Device implements Parcelable, IDevice {
-    public static final Creator<Device> CREATOR = new C07681();
+    public static final Creator<Device> CREATOR = new DeviceCreator();
     public String Brand = "";
     public DeviceTypes DeviceType = DeviceTypes.IRDevice;
     public String DeviceTypeName = "";
@@ -17,8 +17,8 @@ public class Device implements Parcelable, IDevice {
     public String Model = "";
     public String Name = "";
 
-    class C07681 implements Creator<Device> {
-        C07681() {
+    static class DeviceCreator implements Creator<Device> {
+        DeviceCreator() {
         }
 
         public Device createFromParcel(Parcel in) {
@@ -31,8 +31,7 @@ public class Device implements Parcelable, IDevice {
     }
 
     public enum DeviceTypes {
-        IRDevice,
-        AirConDevice
+        IRDevice
     }
 
     protected Device(Parcel in) {

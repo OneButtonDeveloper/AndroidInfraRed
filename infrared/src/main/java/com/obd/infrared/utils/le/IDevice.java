@@ -1,6 +1,6 @@
-package com.uei.control;
+package com.obd.infrared.utils.le;
 
-import com.uei.control.Device.DeviceTypes;
+import com.obd.infrared.utils.le.Device.DeviceTypes;
 
 public interface IDevice {
     String getBrand();

@@ -2,6 +2,7 @@ package com.obd.infrared.transmit;
 
 import android.content.Context;
 
+import com.obd.infrared.devices.IrDevice;
 import com.obd.infrared.log.Logger;
 import com.obd.infrared.transmit.concrete.ActualTransmitter;
 import com.obd.infrared.transmit.concrete.HtcTransmitter;
@@ -10,6 +11,8 @@ import com.obd.infrared.transmit.concrete.LgWithDeviceTransmitter;
 import com.obd.infrared.transmit.concrete.LgWithoutDeviceTransmitter;
 import com.obd.infrared.transmit.concrete.ObsoleteTransmitter;
 import com.obd.infrared.transmit.concrete.UndefinedTransmitter;
+
+import java.util.List;
 
 public abstract class Transmitter {
     public static Transmitter getTransmitterByType(TransmitterType transmitterType, Context context, Logger logger) {
@@ -48,6 +51,18 @@ public abstract class Transmitter {
 
     public abstract void transmit(TransmitInfo transmitInfo);
 
+    public boolean isReady() {
+        return true;
+    }
+
     public void stop() {
+    }
+
+    public void transmit(int deviceId, int functionId, int duration) {
+        throw new RuntimeException("Transmitting by device id " + deviceId + " and function id " + functionId + " with duration " + duration + " not supported");
+    }
+
+    public List<IrDevice> getIrDevices(Logger log) {
+        throw new RuntimeException("getIrDevices not supported");
     }
 }

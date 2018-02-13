@@ -24,7 +24,7 @@ public class ActualDetector implements IDetector {
         try {
             detectorParams.logger.log("Check CONSUMER_IR_SERVICE");
             ConsumerIrManager consumerIrManager = (ConsumerIrManager) detectorParams.context.getSystemService(CONSUMER_IR_SERVICE);
-            if (consumerIrManager.hasIrEmitter()) {
+            if (consumerIrManager != null && consumerIrManager.hasIrEmitter()) {
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                     logCarrierFrequencies(detectorParams, consumerIrManager);
